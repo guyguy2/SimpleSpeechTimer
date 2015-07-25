@@ -1,0 +1,54 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/timerLayout">
+
+    <Chronometer
+        android:id="@+id/chronometer1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="48dp"
+        android:text="@string/chronometer"
+        android:textSize="50sp" />
+
+    <com.happypuppy.toastmasterstimer.CircleTimerView
+        android:id="@+id/stopwatch_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@null"/>
+    
+    <LinearLayout
+        android:id="@+id/buttonLayout"
+        android:orientation="horizontal"
+        android:paddingLeft="4.0dp"
+        android:paddingTop="5.0dp"
+        android:paddingRight="4.0dp"
+        android:paddingBottom="4.0dp"
+        android:layout_width="fill_parent" android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
+
+        <Button
+            android:id="@+id/btnReset"
+            android:layout_width="0.0dp" android:layout_height="fill_parent"
+            android:drawableLeft="@drawable/ic_restore_white_24dp"
+            android:text="@string/pause_btn"
+            android:layout_weight="1.5" />
+
+        <Button
+            android:id="@+id/btnStart"
+            android:layout_width="0.0dp" android:layout_height="fill_parent"
+            android:text="@string/start_btn"
+            android:drawableLeft="@android:drawable/ic_media_play"
+            android:layout_weight="1.5" />
+
+        <Button
+            android:id="@+id/btnSave"
+            android:layout_width="0.0dp" android:layout_height="fill_parent"
+            android:text="@string/save_btn"
+            android:layout_weight="1.0" />
+    </LinearLayout>
+
+</RelativeLayout>

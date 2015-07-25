@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Simple Speech Timer</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_clear_db">Delete Saved Data</string>
+    <string name="action_read_db">Show Saved Data</string>
+    <string name="action_hide_show">Hide</string>
+    <string name="action_about">About</string>
+    <string name="tableTopics">Table Topics (1 to 2 min)</string>
+    <string name="iceBreaker">Ice Breaker (4 to 6 min)</string>
+    <string name="speech">Speech (5 to 7 min)</string>
+    <string name="eightToTen">Speech (8 to 10 min)</string>
+    <string name="speechEval">Evaluation (2 to 3 min)</string>
+    <string name="customSpeech">Speech (custom time)</string>
+    <string name="title_activity_timer_display">Timer</string>
+    <string name="start_btn">Start</string>
+    <string name="pause_btn">Reset</string>
+    <string name="save_btn">Save</string>
+    <string name="title_activity_custom_speech">CustomSpeechActivity</string>
+    <string name="go">Go</string>
+    <string name="to">to</string>
+    <string name="action_feedback">Send Feedback</string>
+    <string name="chronometer">chronometer</string>
+    <string name="choose_a_time_range_min">Please choose a time range (min):</string>
+    <string name="settings_vibrate">Vibrate</string>
+    <string name="settings_vibrate_summary">Vibrate when display changes color</string>
+    <string name="settings_sound">Sound</string>
+    <string name="settings_sound_summary">Play sound when display changes color</string>
+    <string name="contact_developer_uri">happypuppydev@gmail.com</string>
+    <string name="version">1.4.3</string>
+
+</resources>

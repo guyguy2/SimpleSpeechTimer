@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/AppTheme"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
+        android:textSize="18sp"
+        android:text="@string/choose_a_time_range_min" />
+
+    <LinearLayout
+        android:id="@+id/pickerLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView2"
+        android:layout_marginTop="44dp"
+        android:orientation="horizontal"
+        android:paddingBottom="4.0dp"
+        android:paddingLeft="40.0dp"
+        android:paddingRight="40.0dp"
+        android:paddingTop="5.0dp" >
+
+        <NumberPicker
+            android:id="@+id/numberPickerFrom"
+            style="@style/AppTheme"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" >
+        </NumberPicker>
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/to" />
+
+        <NumberPicker
+            android:id="@+id/numberPickerTo"
+            style="@style/AppTheme"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" >
+        </NumberPicker>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/buttonLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingBottom="4.0dp"
+        android:paddingLeft="4.0dp"
+        android:paddingRight="4.0dp"
+        android:paddingTop="5.0dp"
+        android:weightSum="2" >
+
+        <Button
+            android:id="@+id/btnGo"
+            android:layout_width="0.0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:text="@string/go" />
+    </LinearLayout>
+
+</RelativeLayout>
