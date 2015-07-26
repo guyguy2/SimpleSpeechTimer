@@ -156,7 +156,7 @@ public class MainMenuActivity extends Activity {
         ///TODO CursorAdapter
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         if (!db.isOpen()) {
-            Log.e("DB","db closed");///
+            Log.e("DB","db closed");
         }
         final Cursor c = db.query(dbHelper.getDatabaseName(),
                 PersistenceHelper.COLUMNS,

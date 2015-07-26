@@ -14,12 +14,6 @@
         android:text="@string/chronometer"
         android:textSize="50sp" />
 
-    <com.happypuppy.toastmasterstimer.CircleTimerView
-        android:id="@+id/stopwatch_time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@null"/>
-    
     <LinearLayout
         android:id="@+id/buttonLayout"
         android:orientation="horizontal"

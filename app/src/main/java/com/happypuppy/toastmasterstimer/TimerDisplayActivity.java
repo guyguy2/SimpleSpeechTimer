@@ -57,7 +57,6 @@ public class TimerDisplayActivity extends Activity {
     private static int REMOVE_BACKGROUND_COLOR = -1;
     private boolean isTimerRunning = false;
     private Chronometer mChronometer;
-    private CircleTimerView mCircle; ///
     private long timeWhenStopped = 0;
     private boolean useVibrate;
     private boolean useSound;
@@ -66,7 +65,7 @@ public class TimerDisplayActivity extends Activity {
     private boolean isShown = true;
     private PersistenceHelper dbHelper = null;
     private Map<Integer, Integer> statusBarColorMap = new HashMap<>();
-    private Animation stoppedAnimation = new AlphaAnimation(1.0f, 0.1f);
+    private Animation stoppedAnimation = new AlphaAnimation(1.0f, 0.2f);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,8 +82,6 @@ public class TimerDisplayActivity extends Activity {
 
         //setup timer - extract
         mChronometer = (Chronometer) findViewById(R.id.chronometer1);
-        mCircle = (CircleTimerView)findViewById(R.id.stopwatch_time); ///
-        mCircle.startIntervalAnimation();///
         startButton = (Button) findViewById(R.id.btnStart);
         startButton.setTextColor(Color.GREEN);
         this.currentLayout = (RelativeLayout)findViewById(R.id.timerLayout);
@@ -207,7 +204,7 @@ public class TimerDisplayActivity extends Activity {
     }
 
     private void writeToDb() {
-        Log.i("TimerDisplayActivity", "writeToDb " + this.dbHelper.getDatabaseName()); ///
+        Log.d("TimerDisplayActivity", "writeToDb " + this.dbHelper.getDatabaseName());
 //        this.deleteDatabase(dbHelper.getDatabaseName()); ///
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
@@ -382,6 +379,7 @@ public class TimerDisplayActivity extends Activity {
         if (isShown) {
             this.startButton.setVisibility(View.GONE);
             this.resetButton.setVisibility(View.GONE);
+            this.mChronometer.clearAnimation();
             this.mChronometer.setVisibility(View.GONE);
             this.saveButton.setVisibility(View.GONE);
             this.isShown = false;
@@ -390,6 +388,9 @@ public class TimerDisplayActivity extends Activity {
             this.startButton.setVisibility(View.VISIBLE);
             this.resetButton.setVisibility(View.VISIBLE);
             this.mChronometer.setVisibility(View.VISIBLE);
+            if (!isTimerRunning) {
+                this.mChronometer.setAnimation(this.stoppedAnimation);
+            }
             this.saveButton.setVisibility(View.VISIBLE);
             this.isShown = true;
         }
