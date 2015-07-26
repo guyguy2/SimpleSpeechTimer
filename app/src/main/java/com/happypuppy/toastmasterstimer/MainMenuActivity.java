@@ -121,7 +121,7 @@ public class MainMenuActivity extends Activity {
         emailIntent.putExtra(Intent.EXTRA_TEXT, "Hi,");
 
         try {
-            startActivity(Intent.createChooser(emailIntent, "Send email using..."));
+            startActivity(Intent.createChooser(emailIntent, getString(R.string.send_email_using)));
         } catch (android.content.ActivityNotFoundException ex) {
             Toast.makeText(this, "No email clients installed.", Toast.LENGTH_SHORT).show();
         }
@@ -130,17 +130,17 @@ public class MainMenuActivity extends Activity {
 
     private void clearDb() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Confirm");
-        builder.setMessage("Delete all saved data?");
-        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+        builder.setTitle(getString(R.string.confirm));
+        builder.setMessage(getString(R.string.delete_all_saved_data));
+        builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 SQLiteDatabase db = dbHelper.getWritableDatabase();
                 db.delete(dbHelper.getDatabaseName(), null, null);
-                showToast("Saved data deleted");
+                showToast(getString(R.string.saved_data_deleted));
             }
         });
 
-        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -170,10 +170,10 @@ public class MainMenuActivity extends Activity {
 //        Log.e("DB", "" + c.getCount() + "; " + DatabaseUtils.dumpCursorToString(c)); ///
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Saved Data");
+        builder.setTitle(getString(R.string.saved_data));
 
         if (c.getCount() == 0) {
-            showToast("No Data");
+            showToast(getString(R.string.no_data));
             return;
         }
         MyCursorAdapter cursorAdapter = new MyCursorAdapter(this, c);
@@ -183,19 +183,19 @@ public class MainMenuActivity extends Activity {
                 dialog.dismiss();
             }
         });
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
             }
         });
 
-        builder.setNeutralButton("Share", new DialogInterface.OnClickListener() {
+        builder.setNeutralButton(getString(R.string.share), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
                 sharingIntent.setType("text/plain");
                 StringBuilder sb = new StringBuilder();
-                sb.append("Name | Speech Type | Time | Timestamp\n\n");
+                sb.append(getString(R.string.email_header) + "\n\n");
                 c.moveToPosition(-1);
                 while (c.moveToNext()) {
 
@@ -209,9 +209,9 @@ public class MainMenuActivity extends Activity {
                     sb.append('\n');
                 }
                 String shareBody = sb.toString();
-                sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Toastmasters Timer Report");
+                sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getString(R.string.email_subject_tm_timer_report));
                 sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
-                startActivity(Intent.createChooser(sharingIntent, "Share via"));
+                startActivity(Intent.createChooser(sharingIntent, getString(R.string.share_via)));
             }
         });
 

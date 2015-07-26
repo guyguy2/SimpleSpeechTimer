@@ -12,8 +12,6 @@ import android.widget.Button;
 import android.widget.NumberPicker;
 import android.widget.Toast;
 
-//import net.simonvt.numberpicker.NumberPicker;
-
 public class CustomSpeechActivity extends Activity {
 
     private NumberPicker npFrom = null;

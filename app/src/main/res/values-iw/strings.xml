@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">תזמון נאומים</string>
+    <string name="action_settings">הגדרות</string>
+    <string name="action_clear_db">מחק מידע שמור</string>
+    <string name="action_read_db">הצג מידע שמור</string>
+    <string name="action_hide_show">החבא</string>
+    <string name="action_about">אודות</string>
+    <string name="tableTopics">נושאי שולחן (1 עד 2 דקות)</string>
+    <string name="iceBreaker">שובר קרח (4 עד 6 דקות)</string>
+    <string name="speech">נאום (5 עד 7 דקות)</string>
+    <string name="eightToTen">נאום (8 עד 10 דקות)</string>
+    <string name="speechEval">הערכה (2 עד 3 דקות)</string>
+    <string name="customSpeech">נאום (זמן מותאם אישית)</string>
+    <string name="title_activity_timer_display">טיימר</string>
+    <string name="start_btn">התחל</string>
+    <string name="stop_btn_txt">עצור</string>
+    <string name="pause_btn">איפוס</string>
+    <string name="save_btn">שמור</string>
+    <string name="title_activity_custom_speech">התאמה אישית</string>
+    <string name="go">בחר</string>
+    <string name="to">עד</string>
+    <string name="action_feedback">שלח משוב</string>
+    <string name="chronometer">chronometer</string>
+    <string name="choose_a_time_range_min">בחר טווח זמן (דקות)</string>
+    <string name="settings_vibrate">רטט</string>
+    <string name="settings_vibrate_summary">הפעל רטט כאשר התצוגה משנה את הצבע</string>
+    <string name="settings_sound">צלילים</string>
+    <string name="settings_sound_summary">השמע צליל כאשר התצוגה משנה את הצבע</string>
+    <string name="contact_developer_uri">happypuppydev@gmail.com</string>
+    <string name="version">1.4.4</string>
+    <string name="send_email_using">שלח מייל באמצעות..</string>
+    <string name="confirm">אישור</string>
+    <string name="cancel">ביטול</string>
+    <string name="delete_all_saved_data">"מחק את כל המידע השמור?"</string>
+    <string name="yes">"כן"</string>
+    <string name="no">"לא"</string>
+    <string name="saved_data_deleted">"מידע שמור נמחק"</string>
+    <string name="save_time">"שמור זמן"</string>
+    <string name="enter_speaker_name">"הכנס שם"</string>
+    <string name="nothing_to_save">"אין מה לשמור"</string>
+    <string name="error_db">"שגיאה עם מסד הנתונים. מחק ונסה שוב</string>
+    <string name="saving_time">"שומר זמן: "</string>
+    <string name="saved_data">"מידע שמור"</string>
+    <string name="no_data">"אין מידע"</string>
+    <string name="share">"שתף"</string>
+    <string name="email_header">"שם | סוג | תזמון | חותמת זמן"</string>
+    <string name="email_subject_tm_timer_report">"דו"ח זמנים"</string>
+    <string name="share_via">"שתף באמצעות</string>
+
+
+</resources>

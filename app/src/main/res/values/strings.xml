@@ -15,6 +15,7 @@
     <string name="customSpeech">Speech (custom time)</string>
     <string name="title_activity_timer_display">Timer</string>
     <string name="start_btn">Start</string>
+    <string name="stop_btn_txt">Stop</string>
     <string name="pause_btn">Reset</string>
     <string name="save_btn">Save</string>
     <string name="title_activity_custom_speech">CustomSpeechActivity</string>
@@ -28,6 +29,24 @@
     <string name="settings_sound">Sound</string>
     <string name="settings_sound_summary">Play sound when display changes color</string>
     <string name="contact_developer_uri">happypuppydev@gmail.com</string>
-    <string name="version">1.4.3</string>
+    <string name="version">1.4.4</string>
+    <string name="send_email_using">Send email using...</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
+    <string name="delete_all_saved_data">"Delete all saved data?"</string>
+    <string name="yes">"Yes"</string>
+    <string name="no">"No"</string>
+    <string name="saved_data_deleted">"Saved data deleted"</string>
+    <string name="save_time">"Save Time"</string>
+    <string name="enter_speaker_name">"Enter speaker's name"</string>
+    <string name="nothing_to_save">"Nothing to save"</string>
+    <string name="error_db">"Error writing to database. Please delete the data and try again"</string>
+    <string name="saving_time">"Saving time: "</string>
+    <string name="saved_data">"Saved Data"</string>
+    <string name="no_data">"No Data"</string>
+    <string name="share">"Share"</string>
+    <string name="email_header">"Name | Speech Type | Time | Timestamp"</string>
+    <string name="email_subject_tm_timer_report">"Toastmasters Timer Report"</string>
+    <string name="share_via">"Share via"</string>
 
 </resources>

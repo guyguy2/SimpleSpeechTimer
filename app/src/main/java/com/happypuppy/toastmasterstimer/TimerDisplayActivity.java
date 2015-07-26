@@ -45,8 +45,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class TimerDisplayActivity extends Activity {
-    private static String START = "Start";
-    private static String STOP = "Stop";
     private String greenTime;
     private String yellowTime;
     private String redTime;
@@ -54,7 +52,7 @@ public class TimerDisplayActivity extends Activity {
     private Button resetButton;
     private Button saveButton;
     private RelativeLayout currentLayout = null;
-    private static int REMOVE_BACKGROUND_COLOR = -1;
+    private static final int REMOVE_BACKGROUND_COLOR = -1;
     private boolean isTimerRunning = false;
     private Chronometer mChronometer;
     private long timeWhenStopped = 0;
@@ -65,7 +63,7 @@ public class TimerDisplayActivity extends Activity {
     private boolean isShown = true;
     private PersistenceHelper dbHelper = null;
     private Map<Integer, Integer> statusBarColorMap = new HashMap<>();
-    private Animation stoppedAnimation = new AlphaAnimation(1.0f, 0.2f);
+    private final Animation stoppedAnimation = new AlphaAnimation(1.0f, 0.2f);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,7 +117,7 @@ public class TimerDisplayActivity extends Activity {
                     stopTimer();
                     mChronometer.startAnimation(stoppedAnimation);
                 } else {
-                    startButton.setText(STOP);
+                    startButton.setText(R.string.stop_btn_txt);
                     startButton.setTextColor(Color.RED);
                     toggleStartButtonIcon();
                     isTimerRunning = true;
@@ -169,17 +167,17 @@ public class TimerDisplayActivity extends Activity {
     private void persistTime() {
         //popup dialog to get name
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Save Time");
-        builder.setMessage("Enter speaker's name");
+        builder.setTitle(getString(R.string.save_time));
+        builder.setMessage(getString(R.string.enter_speaker_name));
 
         final EditText input = new EditText(this);
         input.setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
         builder.setView(input);
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(getString(R.string.confirm), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (input.getText().toString().isEmpty()) {
-                    Toast.makeText(getApplicationContext(), "Nothing to save", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), getString(R.string.nothing_to_save), Toast.LENGTH_SHORT).show();
                     return;
                 }
 //                Dto dto = new Dto();
@@ -192,7 +190,7 @@ public class TimerDisplayActivity extends Activity {
                 writeToDb();
             }
         });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
@@ -219,24 +217,24 @@ public class TimerDisplayActivity extends Activity {
 
         try {
             db.execSQL("INSERT INTO " + dbHelper.getDatabaseName() +
-                    " (" + Arrays.toString(dbHelper.COLUMNS).replace("[", "").replace("]", "")
+                    " (" + Arrays.toString(PersistenceHelper.COLUMNS).replace("[", "").replace("]", "")
                     + ") VALUES("
                     + ++Dto.id + ", '"
                     + Dto.name + "','"
                     + Dto.type + "', '"
                     + Dto.speechTime + "', '"
                     + Dto.timestamp + "');");
-            Toast.makeText(getApplicationContext(),  "Saving " + Dto.name + "'s time of " + Dto.speechTime, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(),  getString(R.string.saving_time) + Dto.name + ", " + Dto.speechTime, Toast.LENGTH_SHORT).show();
         } catch (SQLiteConstraintException e) {
             Log.e("ERROR", e.getLocalizedMessage());
-            Toast.makeText(getApplicationContext(),  "Error writing to database. Please delete the data and try again", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(),  getString(R.string.error_db), Toast.LENGTH_SHORT).show();
         } finally {
             db.close();
         }
     }
 
     private void stopTimer() {
-        startButton.setText(START);
+        startButton.setText(R.string.start_btn);
         startButton.setTextColor(Color.GREEN);
         toggleStartButtonIcon();
         isTimerRunning = false;
@@ -246,7 +244,7 @@ public class TimerDisplayActivity extends Activity {
     }
 
     private void toggleStartButtonIcon() {
-        if (startButton.getText().equals(START)){
+        if (startButton.getText().equals(getString(R.string.start_btn))){
             Drawable playIcon = getResources().getDrawable( android.R.drawable.ic_media_play );
             startButton.setCompoundDrawablesWithIntrinsicBounds(playIcon, null, null, null);
         }
