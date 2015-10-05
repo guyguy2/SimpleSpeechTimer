@@ -5,6 +5,7 @@
     <string name="action_settings">הגדרות</string>
     <string name="action_clear_db">מחק מידע שמור</string>
     <string name="action_read_db">הצג מידע שמור</string>
+    <string name="action_rate_app">דרג אפליקציה</string>
     <string name="action_hide_show">החבא</string>
     <string name="action_about">אודות</string>
     <string name="tableTopics">נושאי שולחן (1 עד 2 דקות)</string>
@@ -28,8 +29,10 @@
     <string name="settings_vibrate_summary">הפעל רטט כאשר התצוגה משנה את הצבע</string>
     <string name="settings_sound">צלילים</string>
     <string name="settings_sound_summary">השמע צליל כאשר התצוגה משנה את הצבע</string>
+    <string name="settings_color">צבע</string>
+    <string name="settings_color_summary">השתמש ברקע כתום במקום צהוב</string>
     <string name="contact_developer_uri">happypuppydev@gmail.com</string>
-    <string name="version">1.4.4</string>
+    <string name="version">1.4.5</string>
     <string name="send_email_using">שלח מייל באמצעות..</string>
     <string name="confirm">אישור</string>
     <string name="cancel">ביטול</string>

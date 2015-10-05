@@ -3,15 +3,19 @@ package com.happypuppy.toastmasterstimer;
 import android.app.Activity;
 import android.app.ActivityOptions;
 import android.app.AlertDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Point;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -108,8 +112,37 @@ public class MainMenuActivity extends Activity {
             case R.id.action_read_db:
                 readFromDb();
                 return true;
+            case R.id.action_rate_app:
+                rateApp();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void rateApp() {
+        PackageManager pm = getPackageManager() ;
+        String installerPackagename = pm.getInstallerPackageName(getPackageName());
+        boolean fromGooglePlay = true;
+        if (installerPackagename != null) {
+            if (installerPackagename.contains("android.vending")) {
+                fromGooglePlay = true;
+            } else if (installerPackagename.contains("amazon")) {
+                fromGooglePlay = false;
+            }
+        }
+        else {
+            Toast.makeText(this, "No App Store found", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        try {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse((fromGooglePlay ? "market://details?id=" : "amzn://apps/android?p=") + getPackageName())));
+        } catch (ActivityNotFoundException e1) {
+            try {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse((fromGooglePlay ? "http://play.google.com/store/apps/details?id=" : "http://www.amazon.com/gp/mas/dl/android?p=") +getPackageName())));
+            } catch (ActivityNotFoundException e2) {
+                Toast.makeText(this, "You don't have any app that can open this link", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -118,7 +151,13 @@ public class MainMenuActivity extends Activity {
         Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
         emailIntent.setData(Uri.parse("mailto:" + this.getString(R.string.contact_developer_uri)));
         emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Simple Speech Timer Feedback");
-        emailIntent.putExtra(Intent.EXTRA_TEXT, "Hi,");
+        StringBuilder sb = new StringBuilder();
+        sb.append("Device: " + Build.MANUFACTURER + " " + Build.MODEL + " Android " + Build.VERSION.RELEASE + "(API " + Build.VERSION.SDK_INT + ")\n");
+        Point size = new Point();
+        getWindowManager().getDefaultDisplay().getSize(size);
+        sb.append("Resolution: " + size.x + "x" + size.y + "\n");
+        sb.append("- - - - -\n");
+        emailIntent.putExtra(Intent.EXTRA_TEXT, sb.toString());
 
         try {
             startActivity(Intent.createChooser(emailIntent, getString(R.string.send_email_using)));

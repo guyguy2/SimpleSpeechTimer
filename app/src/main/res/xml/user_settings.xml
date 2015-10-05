@@ -19,5 +19,14 @@
         android:summary="@string/settings_sound_summary"
         android:title="@string/settings_sound" />
 
+    <CheckBoxPreference
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/holo_blue_dark"
+        android:defaultValue="false"
+        android:key="pref_color"
+        android:summary="@string/settings_color_summary"
+        android:title="@string/settings_color" />
+
 
 </PreferenceScreen>

@@ -1,5 +1,6 @@
 package com.happypuppy.toastmasterstimer;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -31,6 +32,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.EditText;
@@ -58,6 +60,7 @@ public class TimerDisplayActivity extends Activity {
     private long timeWhenStopped = 0;
     private boolean useVibrate;
     private boolean useSound;
+    private boolean useOrangeBackgroundColor;
     private Ringtone ringtone;
     private boolean useMaterialDesign = false;
     private boolean isShown = true;
@@ -86,6 +89,7 @@ public class TimerDisplayActivity extends Activity {
 
         useVibrate = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("pref_vibrate", false);
         useSound = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("pref_sound", false);
+        useOrangeBackgroundColor = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("pref_color", false);
 
         mChronometer.addTextChangedListener(new TextWatcher() {
             @Override
@@ -94,10 +98,17 @@ public class TimerDisplayActivity extends Activity {
 
                 if (time.equals(greenTime)) {
                     changeBackgroundColor(Color.GREEN);
-                } else if (time.equals(yellowTime))
-                    changeBackgroundColor(Color.YELLOW);
-                else if (time.equals(redTime))
+                } else if (time.equals(yellowTime)) {
+                    if (useOrangeBackgroundColor) {
+                        changeBackgroundColor(Color.rgb(255, 165, 0));
+                    }
+                    else {
+                        changeBackgroundColor(Color.YELLOW);
+                    }
+                }
+                else if (time.equals(redTime)) {
                     changeBackgroundColor(Color.RED);
+                }
             }
 
             @Override
@@ -157,6 +168,7 @@ public class TimerDisplayActivity extends Activity {
         this.statusBarColorMap.put(Color.GREEN, Color.rgb(0, 200, 0));
         this.statusBarColorMap.put(Color.YELLOW, Color.rgb(200, 200, 0));
         this.statusBarColorMap.put(Color.RED, Color.rgb(200, 0, 0));
+        this.statusBarColorMap.put(Color.rgb(255, 165, 0), Color.rgb(250,140,0)); //orange
 
         //Animation
         this.stoppedAnimation.setDuration(700);
@@ -171,16 +183,26 @@ public class TimerDisplayActivity extends Activity {
         builder.setMessage(getString(R.string.enter_speaker_name));
 
         final EditText input = new EditText(this);
-        input.setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+        input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+        final InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        input.requestFocus();
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY | InputMethodManager.HIDE_NOT_ALWAYS);
         builder.setView(input);
         builder.setPositiveButton(getString(R.string.confirm), new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
+            public void onClick(DialogInterface dialog, int which) { ///
                 if (input.getText().toString().isEmpty()) {
                     Toast.makeText(getApplicationContext(), getString(R.string.nothing_to_save), Toast.LENGTH_SHORT).show();
+                    View view = findViewById(android.R.id.content);
+                    if (view != null) {
+                        imm.toggleSoftInput(0, 0);
+                    }
+                    input.clearFocus();
                     return;
                 }
 //                Dto dto = new Dto();
+                input.clearFocus();
+                imm.toggleSoftInput(0, 0);
                 Dto.name = input.getText().toString();
                 Dto.speechTime = mChronometer.getText().toString();
                 Dto.type = getActionBar().getTitle().toString().substring(0, getActionBar().getTitle().toString().indexOf('('));
@@ -193,6 +215,8 @@ public class TimerDisplayActivity extends Activity {
         builder.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                input.clearFocus();
+                imm.toggleSoftInput(0, 0);
                 dialog.cancel();
             }
         });
@@ -394,6 +418,7 @@ public class TimerDisplayActivity extends Activity {
         }
     }
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void changeBackgroundColor(int color) {
         if (currentLayout != null)
         {
@@ -422,12 +447,12 @@ public class TimerDisplayActivity extends Activity {
                     this.getActionBar().setBackgroundDrawable(new ColorDrawable(color));
                     getWindow().setNavigationBarColor(color);
                 }
-                triggerCues();
+                triggerCues(color);
             }
         }
     }
 
-    private void triggerCues() {
+    private void triggerCues(int color) {
         if (this.useSound) {
             try {
                 this.ringtone.play();
@@ -437,8 +462,14 @@ public class TimerDisplayActivity extends Activity {
             }
         }
         if (this.useVibrate) {
-            ((Vibrator)getSystemService(Context.VIBRATOR_SERVICE)).vibrate(250);
+            //can add patterns in the future
+            if (color == Color.RED) {
+                long pattern[]={0,300,300,300};
+                ((Vibrator)getSystemService(Context.VIBRATOR_SERVICE)).vibrate(pattern, -1);
+            }
+            else {
+                ((Vibrator)getSystemService(Context.VIBRATOR_SERVICE)).vibrate(300);
+            }
         }
     }
-
 }
