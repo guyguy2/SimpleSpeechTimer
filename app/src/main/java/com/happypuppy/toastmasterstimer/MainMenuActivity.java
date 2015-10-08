@@ -15,7 +15,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,9 +26,13 @@ import android.widget.Toast;
 
 import com.happypuppy.toastmasterstimer.persistence.PersistenceHelper;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 public class MainMenuActivity extends Activity {
 
     private static final String EXTRA_MESSAGE = "key";
+    private static final String SPACE = " ";
     private PersistenceHelper dbHelper = null;
 
     @Override
@@ -152,10 +155,10 @@ public class MainMenuActivity extends Activity {
         emailIntent.setData(Uri.parse("mailto:" + this.getString(R.string.contact_developer_uri)));
         emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Simple Speech Timer Feedback");
         StringBuilder sb = new StringBuilder();
-        sb.append("Device: " + Build.MANUFACTURER + " " + Build.MODEL + " Android " + Build.VERSION.RELEASE + "(API " + Build.VERSION.SDK_INT + ")\n");
+        sb.append("Device: " + Build.MANUFACTURER + " " + Build.MODEL + " Android " + Build.VERSION.RELEASE + "(API " + Build.VERSION.SDK_INT + "), ");
         Point size = new Point();
         getWindowManager().getDefaultDisplay().getSize(size);
-        sb.append("Resolution: " + size.x + "x" + size.y + "\n");
+        sb.append("resolution: " + size.x + "x" + size.y + "\n");
         sb.append("- - - - -\n");
         emailIntent.putExtra(Intent.EXTRA_TEXT, sb.toString());
 
@@ -165,6 +168,12 @@ public class MainMenuActivity extends Activity {
             Toast.makeText(this, "No email clients installed.", Toast.LENGTH_SHORT).show();
         }
 
+    }
+
+    private String getTodayDate() {
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        return sdf.format(c.getTime());
     }
 
     private void clearDb() {
@@ -236,19 +245,23 @@ public class MainMenuActivity extends Activity {
                 StringBuilder sb = new StringBuilder();
                 sb.append(getString(R.string.email_header) + "\n\n");
                 c.moveToPosition(-1);
+                int i = 0;
                 while (c.moveToNext()) {
-
+                    sb.append(++i + ". ");
+                    sb.append(SPACE);
                     sb.append(c.getString(c.getColumnIndex("NAME")));
-                    sb.append(" ");
+                    sb.append(SPACE);
                     sb.append(c.getString(c.getColumnIndex("TYPE")));
-                    sb.append(" ");
+                    sb.append(SPACE);
                     sb.append(c.getString(c.getColumnIndex("TIME")));
-                    sb.append(" ");
-                    sb.append(c.getString(c.getColumnIndex("TIMESTAMP")));
+                    sb.append(SPACE);
+//                    sb.append(c.getString(c.getColumnIndex("TIMESTAMP")));
                     sb.append('\n');
                 }
+                sb.append("\n\n");
+                sb.append("Created using Simple Speech Timerbasg\n");
                 String shareBody = sb.toString();
-                sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getString(R.string.email_subject_tm_timer_report));
+                sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getString(R.string.email_subject_tm_timer_report) + " - " + getTodayDate());
                 sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
                 startActivity(Intent.createChooser(sharingIntent, getString(R.string.share_via)));
             }

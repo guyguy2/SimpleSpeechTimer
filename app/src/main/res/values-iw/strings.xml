@@ -32,7 +32,7 @@
     <string name="settings_color">צבע</string>
     <string name="settings_color_summary">השתמש ברקע כתום במקום צהוב</string>
     <string name="contact_developer_uri">happypuppydev@gmail.com</string>
-    <string name="version">1.4.5</string>
+    <string name="version">1.4.6</string>
     <string name="send_email_using">שלח מייל באמצעות..</string>
     <string name="confirm">אישור</string>
     <string name="cancel">ביטול</string>
@@ -48,7 +48,7 @@
     <string name="saved_data">"מידע שמור"</string>
     <string name="no_data">"אין מידע"</string>
     <string name="share">"שתף"</string>
-    <string name="email_header">"שם | סוג | תזמון | חותמת זמן"</string>
+    <string name="email_header">"שם | סוג | תזמון"</string>
     <string name="email_subject_tm_timer_report">"דו"ח זמנים"</string>
     <string name="share_via">"שתף באמצעות</string>
 
