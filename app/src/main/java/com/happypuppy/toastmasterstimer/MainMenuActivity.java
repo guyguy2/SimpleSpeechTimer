@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.net.Uri;
 import android.os.Build;
@@ -99,18 +100,12 @@ public class MainMenuActivity extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
-            case R.id.action_about:
-                showToast("Simple Speech Timer version " + this.getString(R.string.version));
-                return true;
             case R.id.action_settings:
                 Intent intent = new Intent(this, PreferencesActivity.class);
                 startActivity(intent);
                 return true;
             case R.id.action_feedback:
-                sendEmail();
-                return true;
-            case R.id.action_clear_db:
-                clearDb();
+                sendFeedbackEmail();
                 return true;
             case R.id.action_read_db:
                 readFromDb();
@@ -149,7 +144,7 @@ public class MainMenuActivity extends Activity {
         }
     }
 
-    private void sendEmail(){
+    private void sendFeedbackEmail(){
 
         Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
         emailIntent.setData(Uri.parse("mailto:" + this.getString(R.string.contact_developer_uri)));
@@ -231,13 +226,20 @@ public class MainMenuActivity extends Activity {
                 dialog.dismiss();
             }
         });
-        builder.setPositiveButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+        builder.setNeutralButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
             }
         });
 
-        builder.setNeutralButton(getString(R.string.share), new DialogInterface.OnClickListener() {
+        builder.setNegativeButton("Delete", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                clearDb();
+            }
+        });
+
+        builder.setPositiveButton(getString(R.string.share), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
@@ -259,7 +261,7 @@ public class MainMenuActivity extends Activity {
                     sb.append('\n');
                 }
                 sb.append("\n\n");
-                sb.append("Created using Simple Speech Timerbasg\n");
+                sb.append("Created using Simple Speech Timer for Android\n");
                 String shareBody = sb.toString();
                 sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getString(R.string.email_subject_tm_timer_report) + " - " + getTodayDate());
                 sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
@@ -269,6 +271,8 @@ public class MainMenuActivity extends Activity {
 
         AlertDialog alert = builder.create();
         alert.show();
+        alert.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(Color.RED);
+        alert.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(Color.GREEN);
      }
 
     private void showToast(String msg) {
@@ -285,6 +289,20 @@ public class MainMenuActivity extends Activity {
         @Override
         public View newView(Context context, Cursor cursor, ViewGroup parent) {
             return LayoutInflater.from(context).inflate(R.layout.show_data_view, parent, false);
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            //get reference to the row
+            View view = super.getView(position, convertView, parent);
+            //check for odd or even to set alternate colors to the row background
+            if(position % 2 == 0){
+                view.setBackgroundColor(Color.rgb(238, 233, 233));
+            }
+            else {
+                view.setBackgroundColor(Color.rgb(255, 255, 255));
+            }
+            return view;
         }
 
         // The bindView method is used to bind all data to a given view
@@ -308,6 +326,4 @@ public class MainMenuActivity extends Activity {
 //            tvTimestamp.setText(timestamp);
         }
     }
-
-
 }

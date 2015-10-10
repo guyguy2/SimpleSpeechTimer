@@ -1,37 +1,37 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<TableLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
-    android:orientation="horizontal" >
-    <TextView
-        android:id="@+id/tvName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Name"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+    android:shrinkColumns="*"
+    android:stretchColumns="*"
+    android:background="#ffffff">
 
-    <TextView
-        android:id="@+id/tvType"
-        android:layout_width="wrap_content"
+    <TableRow
+        android:id="@+id/tableRow1"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:text="Type"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:layout_width="match_parent">
 
-    <TextView
-        android:id="@+id/tvTime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:text="Time"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-
-    <!--<TextView-->
-        <!--android:id="@+id/tvTimestamp"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginLeft="10dp"-->
-        <!--android:text="Timestamp"-->
-        <!--android:textAppearance="?android:attr/textAppearanceMedium" />-->
-</LinearLayout>
+        <TextView
+            android:id="@+id/tvName"
+            android:text="Name"
+            android:layout_weight="1"
+            android:textColor="#000000"
+            android:padding="5dp"
+            android:textAppearance="?android:attr/textAppearanceListItem"
+            android:gravity="left"/>
+        <TextView
+            android:id="@+id/tvType"
+            android:text="Type"
+            android:layout_weight="1"
+            android:textColor="#000000"
+            android:padding="5dp"
+            android:gravity="center"/>
+        <TextView
+            android:id="@+id/tvTime"
+            android:text="Time"
+            android:layout_weight="1"
+            android:textColor="#000000"
+            android:padding="5dp"
+            android:gravity="right"/>
+    </TableRow>
+</TableLayout>
