@@ -135,7 +135,7 @@ public class TimerDisplayActivity extends Activity {
                     isTimerRunning = true;
                     mChronometer.setBase(SystemClock.elapsedRealtime() + timeWhenStopped);
                     mChronometer.start();
-                    saveButton.setEnabled(false);
+                    enableSaveButton(false);
                     mChronometer.clearAnimation();
                 }
             }
@@ -149,7 +149,7 @@ public class TimerDisplayActivity extends Activity {
                 changeBackgroundColor(REMOVE_BACKGROUND_COLOR); //TODO refactor to take color from XML
                 mChronometer.setBase(SystemClock.elapsedRealtime());
                 timeWhenStopped = 0;
-                saveButton.setEnabled(false);
+                enableSaveButton(false);
             }
         });
         ringtone = RingtoneManager.getRingtone(getApplicationContext(), RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
@@ -157,7 +157,7 @@ public class TimerDisplayActivity extends Activity {
             this.useMaterialDesign = true;
         }
         saveButton = (Button)findViewById(R.id.btnSave);
-        saveButton.setEnabled(false);
+        enableSaveButton(false);
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -177,6 +177,21 @@ public class TimerDisplayActivity extends Activity {
         this.stoppedAnimation.setRepeatCount(Animation.INFINITE);
     }
 
+    private void enableSaveButton(boolean isEnabled) {
+        if (isEnabled) {
+            saveButton.setEnabled(true);
+            Drawable saveIcon = ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_save_white_24dp);
+            saveIcon.setAlpha(255);
+            saveButton.setCompoundDrawablesWithIntrinsicBounds(saveIcon, null, null, null);
+        }
+        else {
+            saveButton.setEnabled(false);
+            Drawable saveIcon = ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_save_white_24dp);
+            saveIcon.setAlpha(130);
+            saveButton.setCompoundDrawablesWithIntrinsicBounds(saveIcon, null, null, null);
+        }
+    }
+
     private void persistTime() {
         //popup dialog to get name
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -191,7 +206,7 @@ public class TimerDisplayActivity extends Activity {
         builder.setView(input);
         builder.setPositiveButton(getString(R.string.confirm), new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) { ///
+            public void onClick(DialogInterface dialog, int which) {
                 if (input.getText().toString().isEmpty()) {
                     Toast.makeText(getApplicationContext(), getString(R.string.nothing_to_save), Toast.LENGTH_SHORT).show();
                     View view = findViewById(android.R.id.content);
@@ -201,7 +216,6 @@ public class TimerDisplayActivity extends Activity {
                     input.clearFocus();
                     return;
                 }
-//                Dto dto = new Dto();
                 input.clearFocus();
                 imm.toggleSoftInput(0, 0);
                 Dto.name = input.getText().toString();
@@ -265,16 +279,16 @@ public class TimerDisplayActivity extends Activity {
         isTimerRunning = false;
         timeWhenStopped = mChronometer.getBase() - SystemClock.elapsedRealtime();
         mChronometer.stop();
-        saveButton.setEnabled(true);
+        enableSaveButton(true);
     }
 
     private void toggleStartButtonIcon() {
         if (startButton.getText().equals(getString(R.string.start_btn))){
-            Drawable playIcon = getResources().getDrawable( android.R.drawable.ic_media_play );
+            Drawable playIcon = ContextCompat.getDrawable(this, android.R.drawable.ic_media_play);
             startButton.setCompoundDrawablesWithIntrinsicBounds(playIcon, null, null, null);
         }
         else {
-            Drawable pauseIcon = getResources().getDrawable( android.R.drawable.ic_media_pause );
+            Drawable pauseIcon = ContextCompat.getDrawable(this, android.R.drawable.ic_media_pause);
             startButton.setCompoundDrawablesWithIntrinsicBounds(pauseIcon, null, null, null);
         }
     }
