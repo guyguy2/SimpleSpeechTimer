@@ -21,6 +21,7 @@ import android.os.SystemClock;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NavUtils;
+import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -382,10 +383,10 @@ public class TimerDisplayActivity extends Activity {
         MenuItem menuItem = menu.findItem(R.id.action_show_hide);
         Drawable icon;
         if (isShown) {
-             icon = getResources().getDrawable(R.drawable.ic_visibility_white_24dp );
+            icon = ContextCompat.getDrawable(this, R.drawable.ic_visibility_white_24dp);
         }
         else {
-             icon = getResources().getDrawable( R.drawable.ic_visibility_off_white_24dp);
+            icon = ContextCompat.getDrawable(this, R.drawable.ic_visibility_off_white_24dp);
         }
         menuItem.setIcon(icon);
         return super.onPrepareOptionsMenu(menu);
