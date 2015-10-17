@@ -33,7 +33,7 @@
     <string name="settings_color_summary">Use orange background instead of yellow</string>
     <string name="contact_developer_uri">happypuppydev@gmail.com</string>
     <string name="version">1.4.6</string>
-    <string name="send_email_using">Send email using...</string>
+    <string name="send_email_using">Send email using…</string>
     <string name="confirm">Confirm</string>
     <string name="cancel">Cancel</string>
     <string name="delete_all_saved_data">"Delete all saved data?"</string>

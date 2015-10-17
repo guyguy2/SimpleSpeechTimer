@@ -15,6 +15,7 @@ import android.graphics.Point;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -150,7 +151,7 @@ public class MainMenuActivity extends Activity {
         emailIntent.setData(Uri.parse("mailto:" + this.getString(R.string.contact_developer_uri)));
         emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Simple Speech Timer Feedback");
         StringBuilder sb = new StringBuilder();
-        sb.append("Device: " + Build.MANUFACTURER + " " + Build.MODEL + " Android " + Build.VERSION.RELEASE + "(API " + Build.VERSION.SDK_INT + "), ");
+        sb.append("Device: " + Build.MANUFACTURER + " " + Build.MODEL + " Android " + Build.VERSION.RELEASE + " (API " + Build.VERSION.SDK_INT + "), ");
         Point size = new Point();
         getWindowManager().getDefaultDisplay().getSize(size);
         sb.append("resolution: " + size.x + "x" + size.y + "\n");
@@ -167,7 +168,7 @@ public class MainMenuActivity extends Activity {
 
     private String getTodayDate() {
         Calendar c = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy", java.util.Locale.getDefault());
         return sdf.format(c.getTime());
     }
 
@@ -302,6 +303,7 @@ public class MainMenuActivity extends Activity {
             else {
                 view.setBackgroundColor(Color.rgb(255, 255, 255));
             }
+
             return view;
         }
 

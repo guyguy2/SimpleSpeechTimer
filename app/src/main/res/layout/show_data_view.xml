@@ -6,10 +6,38 @@
     android:stretchColumns="*"
     android:background="#ffffff">
 
-    <TableRow
-        android:id="@+id/tableRow1"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent">
+    <!--  <TableRow>
+
+          <TextView
+              android:id="@+id/colName"
+              android:text="Name"
+              android:layout_weight="1"
+              android:textColor="#000000"
+              android:padding="5dp"
+              android:textAppearance="?android:attr/textAppearanceListItem"
+              android:layout_width="0dp"/>
+          <TextView
+              android:id="@+id/colType"
+              android:text="Type"
+              android:layout_weight="1"
+              android:textColor="#000000"
+              android:padding="5dp"
+              android:textAppearance="?android:attr/textAppearanceListItem"
+              android:layout_width="0dp"/>
+          <TextView
+              android:id="@+id/colTime"
+              android:text="Time"
+              android:layout_weight="0.5"
+              android:textColor="#000000"
+              android:padding="5dp"
+              android:textAppearance="?android:attr/textAppearanceListItem"
+              android:gravity="center_horizontal"
+              android:layout_width="0dp"/>
+
+      </TableRow> -->
+
+    <TableRow>
+
 
         <TextView
             android:id="@+id/tvName"
@@ -18,20 +46,24 @@
             android:textColor="#000000"
             android:padding="5dp"
             android:textAppearance="?android:attr/textAppearanceListItem"
-            android:gravity="left"/>
+            android:layout_width="0dp"
+            />
         <TextView
             android:id="@+id/tvType"
             android:text="Type"
             android:layout_weight="1"
             android:textColor="#000000"
             android:padding="5dp"
-            android:gravity="center"/>
+            android:layout_width="0dp"
+            />
         <TextView
             android:id="@+id/tvTime"
             android:text="Time"
-            android:layout_weight="1"
+            android:layout_weight="0.5"
             android:textColor="#000000"
             android:padding="5dp"
-            android:gravity="right"/>
+            android:layout_width="0dp"
+            android:gravity="center_horizontal"
+            />
     </TableRow>
 </TableLayout>

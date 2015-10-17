@@ -178,18 +178,16 @@ public class TimerDisplayActivity extends Activity {
     }
 
     private void enableSaveButton(boolean isEnabled) {
+        Drawable saveIcon = ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_save_white_24dp);
         if (isEnabled) {
             saveButton.setEnabled(true);
-            Drawable saveIcon = ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_save_white_24dp);
             saveIcon.setAlpha(255);
-            saveButton.setCompoundDrawablesWithIntrinsicBounds(saveIcon, null, null, null);
         }
         else {
             saveButton.setEnabled(false);
-            Drawable saveIcon = ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_save_white_24dp);
-            saveIcon.setAlpha(130);
-            saveButton.setCompoundDrawablesWithIntrinsicBounds(saveIcon, null, null, null);
+            saveIcon.setAlpha(100);
         }
+        saveButton.setCompoundDrawablesWithIntrinsicBounds(saveIcon, null, null, null);
     }
 
     private void persistTime() {
