@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
@@ -17,6 +18,7 @@ import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.os.SystemClock;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
@@ -43,8 +45,11 @@ import android.widget.Toast;
 import com.happypuppy.toastmasterstimer.persistence.Dto;
 import com.happypuppy.toastmasterstimer.persistence.PersistenceHelper;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 public class TimerDisplayActivity extends Activity {
@@ -83,33 +88,22 @@ public class TimerDisplayActivity extends Activity {
         setupParams();
 
         //setup timer - extract
-        mChronometer = (Chronometer) findViewById(R.id.chronometer1);
-        startButton = (Button) findViewById(R.id.btnStart);
+        mChronometer = findViewById(R.id.chronometer1);
+        startButton = findViewById(R.id.btnStart);
         startButton.setTextColor(Color.GREEN);
-        this.currentLayout = (RelativeLayout)findViewById(R.id.timerLayout);
+        this.currentLayout = findViewById(R.id.timerLayout);
 
         useVibrate = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("pref_vibrate", false);
         useSound = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("pref_sound", false);
         useOrangeBackgroundColor = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("pref_color", false);
+
+
 
         mChronometer.addTextChangedListener(new TextWatcher() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String time = s.toString();
 
-                if (time.equals(greenTime)) {
-                    changeBackgroundColor(Color.GREEN);
-                } else if (time.equals(yellowTime)) {
-                    if (useOrangeBackgroundColor) {
-                        changeBackgroundColor(Color.rgb(255, 165, 0));
-                    }
-                    else {
-                        changeBackgroundColor(Color.YELLOW);
-                    }
-                }
-                else if (time.equals(redTime)) {
-                    changeBackgroundColor(Color.RED);
-                }
             }
 
             @Override
@@ -121,6 +115,27 @@ public class TimerDisplayActivity extends Activity {
             }
         });
 
+        mChronometer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
+            @Override
+            public void onChronometerTick(Chronometer chronometer) {
+                String displayedTime = String.valueOf(chronometer.getText());
+
+                if (displayedTime.equals(greenTime)) {
+                    changeBackgroundColor(Color.GREEN);
+                } else if (displayedTime.equals(yellowTime)) {
+                    if (useOrangeBackgroundColor) {
+                        changeBackgroundColor(Color.rgb(255, 165, 0));
+                    }
+                    else {
+                        changeBackgroundColor(Color.YELLOW);
+                    }
+                }
+                else if (displayedTime.equals(redTime)) {
+                    changeBackgroundColor(Color.RED);
+                }
+            }
+        });
+
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -129,19 +144,13 @@ public class TimerDisplayActivity extends Activity {
                     stopTimer();
                     mChronometer.startAnimation(stoppedAnimation);
                 } else {
-                    startButton.setText(R.string.stop_btn_txt);
-                    startButton.setTextColor(Color.RED);
-                    toggleStartButtonIcon();
-                    isTimerRunning = true;
-                    mChronometer.setBase(SystemClock.elapsedRealtime() + timeWhenStopped);
-                    mChronometer.start();
-                    enableSaveButton(false);
+                    startTimer();
                     mChronometer.clearAnimation();
                 }
             }
         });
 
-        resetButton = (Button) findViewById(R.id.btnReset);
+        resetButton = findViewById(R.id.btnReset);
         resetButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 stopTimer();
@@ -156,7 +165,7 @@ public class TimerDisplayActivity extends Activity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             this.useMaterialDesign = true;
         }
-        saveButton = (Button)findViewById(R.id.btnSave);
+        saveButton = findViewById(R.id.btnSave);
         enableSaveButton(false);
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -175,6 +184,30 @@ public class TimerDisplayActivity extends Activity {
         this.stoppedAnimation.setDuration(700);
         this.stoppedAnimation.setRepeatMode(Animation.REVERSE);
         this.stoppedAnimation.setRepeatCount(Animation.INFINITE);
+
+        if (savedInstanceState != null) { //restore state (orientation change)
+            mChronometer.setText(savedInstanceState.getCharSequence("time"));
+            isTimerRunning = savedInstanceState.getBoolean("isRunning");
+            long currentTime = savedInstanceState.getLong("currentTime");
+            timeWhenStopped = savedInstanceState.getLong("timeWhenStopped");
+            isShown = !savedInstanceState.getBoolean("isShown");
+            toggleShowHideElements();
+            if (!isTimerRunning) {
+                enableSaveButton(savedInstanceState.getBoolean("saveButtonState"));
+            } else {
+                startButton.setText(R.string.stop_btn_txt);
+                startButton.setTextColor(Color.RED);
+                toggleStartButtonIcon();
+                isTimerRunning = true;
+                mChronometer.setBase(SystemClock.elapsedRealtime() + currentTime);
+                mChronometer.start();
+                enableSaveButton(false);
+                mChronometer.clearAnimation();
+            }
+            if (savedInstanceState.getInt("color") != 0) {
+                changeBackgroundColor(savedInstanceState.getInt("color"));
+            }
+        }
     }
 
     private void enableSaveButton(boolean isEnabled) {
@@ -219,6 +252,7 @@ public class TimerDisplayActivity extends Activity {
                 Dto.name = input.getText().toString();
                 Dto.speechTime = mChronometer.getText().toString();
                 Dto.type = getActionBar().getTitle().toString().substring(0, getActionBar().getTitle().toString().indexOf('('));
+                //replace with localDateTime
                 Time t = new Time(Time.getCurrentTimezone());
                 t.setToNow();
                 Dto.timestamp = t.format("%m/%d/%Y %H:%M");
@@ -270,14 +304,44 @@ public class TimerDisplayActivity extends Activity {
         }
     }
 
+    private void startTimer() {
+        startButton.setText(R.string.stop_btn_txt);
+        if (isBackgroundColor(Color.RED)) {
+            startButton.setTextColor(Color.BLACK);
+        } else {
+            startButton.setTextColor(Color.RED);
+        }
+        toggleStartButtonIcon();
+        isTimerRunning = true;
+        mChronometer.setBase(SystemClock.elapsedRealtime() + timeWhenStopped);
+        mChronometer.start();
+        enableSaveButton(false);
+    }
+
     private void stopTimer() {
         startButton.setText(R.string.start_btn);
-        startButton.setTextColor(Color.GREEN);
+        if (isBackgroundColor(Color.GREEN)) {
+            startButton.setTextColor(Color.BLACK);
+        } else {
+            startButton.setTextColor(Color.GREEN);
+        }
         toggleStartButtonIcon();
         isTimerRunning = false;
         timeWhenStopped = mChronometer.getBase() - SystemClock.elapsedRealtime();
         mChronometer.stop();
         enableSaveButton(true);
+    }
+
+    private boolean isBackgroundColor(int color) {
+        if (currentLayout == null || currentLayout.getBackground() == null) {
+            return false;
+        }
+
+        int backgroundColor = ((ColorDrawable)currentLayout.getBackground()).getColor();
+        if (backgroundColor == color) {
+            return true;
+        }
+        return false;
     }
 
     private void toggleStartButtonIcon() {
@@ -291,6 +355,16 @@ public class TimerDisplayActivity extends Activity {
         }
     }
 
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        Log.e("","*****");
+        super.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
+        super.onCreate(savedInstanceState, persistentState);
+    }
 
     private void setupParams() {
         Intent intent = getIntent();
@@ -320,8 +394,8 @@ public class TimerDisplayActivity extends Activity {
         else if (type.startsWith(res.getString(R.string.customSpeech)))
         {
             String[] times = type.split(":");
-            this.greenTime = String.format("%02d:00", Integer.parseInt(times[1]));
-            this.redTime = String.format("%02d:00", Integer.parseInt(times[2]));
+            this.greenTime = String.format(Locale.getDefault(),"%02d:00", Integer.parseInt(times[1]));
+            this.redTime = String.format(Locale.getDefault(),"%02d:00", Integer.parseInt(times[2]));
 
             setTitle("Speech (" + times[1] + " to " + times[2]+ " min)");
         }
@@ -331,24 +405,34 @@ public class TimerDisplayActivity extends Activity {
             this.greenTime = "02:00";
             this.redTime = "03:00";
         }
-        else if (type.equals(res.getString(R.string.eightToTen)))
+        else if (type.equals(res.getString(R.string.tableTopicsZeroToOne)))
         {
-            setTitle(res.getString(R.string.eightToTen).replace(BIGGER_THAN, ""));
-            this.greenTime = "08:00";
-            this.redTime = "10:00";
+            setTitle(res.getString(R.string.speechEval).replace(BIGGER_THAN, ""));
+            this.greenTime = "00:30";
+            this.redTime = "01:00";
+            this.yellowTime = "00:45";
+            return;
         }
+
+        this.yellowTime = calculateYellowTime();
+    }
+
+    private String calculateYellowTime() {
         int yellow;
         boolean isHalf = false;
-        int temp = (Integer.parseInt(greenTime.split(":")[0]) + Integer.parseInt(redTime.split(":")[0]));
-        if (temp % 2 != 0)
-            isHalf = true;
 
+        int temp = (Integer.parseInt(greenTime.split(":")[0]) + Integer.parseInt(redTime.split(":")[0]));
+        System.out.println("temp: " + temp);///
+        if (temp % 2 != 0) {
+            isHalf = true;
+        }
         yellow = temp / 2;
 
-        if (isHalf)
-            this.yellowTime = String.format("%02d:30", yellow);
-        else
-            this.yellowTime = String.format("%02d:00", yellow);
+        if (isHalf) {
+            return String.format("%02d:30", yellow);
+        } else {
+            return String.format("%02d:00", yellow);
+        }
     }
 
     /**
@@ -410,19 +494,21 @@ public class TimerDisplayActivity extends Activity {
     }
 
     private void toggleShowHideElements() {
+        final float ALPHA_INVISIBLE = 0f;
+        final float ALPHA_VISIBLE = 1f;
         invalidateOptionsMenu();
         if (isShown) {
             this.startButton.setVisibility(View.GONE);
             this.resetButton.setVisibility(View.GONE);
             this.mChronometer.clearAnimation();
-            this.mChronometer.setVisibility(View.GONE);
+            this.mChronometer.setAlpha(ALPHA_INVISIBLE);
             this.saveButton.setVisibility(View.GONE);
             this.isShown = false;
         }
         else {
             this.startButton.setVisibility(View.VISIBLE);
             this.resetButton.setVisibility(View.VISIBLE);
-            this.mChronometer.setVisibility(View.VISIBLE);
+            this.mChronometer.setAlpha(ALPHA_VISIBLE);
             if (!isTimerRunning) {
                 this.mChronometer.setAnimation(this.stoppedAnimation);
             }
@@ -431,7 +517,6 @@ public class TimerDisplayActivity extends Activity {
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void changeBackgroundColor(int color) {
         if (currentLayout != null)
         {
@@ -484,5 +569,19 @@ public class TimerDisplayActivity extends Activity {
                 ((Vibrator)getSystemService(Context.VIBRATOR_SERVICE)).vibrate(300);
             }
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putCharSequence("time", mChronometer.getText());
+        outState.putLong("timeWhenStopped", timeWhenStopped);
+        outState.putLong("currentTime", mChronometer.getBase() - SystemClock.elapsedRealtime());
+        if (currentLayout.getBackground() != null) {
+            outState.putInt("color", ((ColorDrawable)currentLayout.getBackground()).getColor());
+        }
+        outState.putBoolean("isRunning", isTimerRunning);
+        outState.putBoolean("saveButtonState", saveButton.isEnabled());
+        outState.putBoolean("isShown", isShown);
     }
 }

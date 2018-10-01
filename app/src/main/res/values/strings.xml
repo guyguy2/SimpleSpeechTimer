@@ -11,7 +11,7 @@
     <string name="tableTopics">Table Topics (1 to 2 min)</string>
     <string name="iceBreaker">Ice Breaker (4 to 6 min)</string>
     <string name="speech">Speech (5 to 7 min)</string>
-    <string name="eightToTen">Speech (8 to 10 min)</string>
+    <string name="tableTopicsZeroToOne">Table Topics (0 to 1 min)</string>
     <string name="speechEval">Evaluation (2 to 3 min)</string>
     <string name="customSpeech">Speech (custom time)</string>
     <string name="title_activity_timer_display">Timer</string>
@@ -20,7 +20,7 @@
     <string name="pause_btn">Reset</string>
     <string name="save_btn">Save</string>
     <string name="title_activity_custom_speech">CustomSpeechActivity</string>
-    <string name="go">Go</string>
+    <string name="go">OK</string>
     <string name="to">to</string>
     <string name="action_feedback">Send Feedback</string>
     <string name="chronometer">chronometer</string>
@@ -32,7 +32,7 @@
     <string name="settings_color">Color</string>
     <string name="settings_color_summary">Use orange background instead of yellow</string>
     <string name="contact_developer_uri">happypuppydev@gmail.com</string>
-    <string name="version">1.4.6</string>
+    <string name="version">1.5.0</string>
     <string name="send_email_using">Send email using…</string>
     <string name="confirm">Confirm</string>
     <string name="cancel">Cancel</string>

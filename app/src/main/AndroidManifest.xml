@@ -22,7 +22,6 @@
         <activity
             android:name="com.happypuppy.toastmasterstimer.TimerDisplayActivity"
             android:label="@string/title_activity_timer_display"
-            android:screenOrientation="portrait"
             android:parentActivityName="com.happypuppy.toastmasterstimer.MainMenuActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

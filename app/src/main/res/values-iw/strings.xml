@@ -11,7 +11,7 @@
     <string name="tableTopics">נושאי שולחן (1 עד 2 דקות)</string>
     <string name="iceBreaker">שובר קרח (4 עד 6 דקות)</string>
     <string name="speech">נאום (5 עד 7 דקות)</string>
-    <string name="eightToTen">נאום (8 עד 10 דקות)</string>
+    <string name="tableTopicsZeroToOne">נושאי שולחן (0 עד דקה)</string>
     <string name="speechEval">הערכה (2 עד 3 דקות)</string>
     <string name="customSpeech">נאום (זמן מותאם אישית)</string>
     <string name="title_activity_timer_display">טיימר</string>
@@ -32,7 +32,7 @@
     <string name="settings_color">צבע</string>
     <string name="settings_color_summary">השתמש ברקע כתום במקום צהוב</string>
     <string name="contact_developer_uri">happypuppydev@gmail.com</string>
-    <string name="version">1.4.6</string>
+    <string name="version">1.5.0</string>
     <string name="send_email_using">שלח מייל באמצעות..</string>
     <string name="confirm">אישור</string>
     <string name="cancel">ביטול</string>

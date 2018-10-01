@@ -7,6 +7,7 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -15,13 +16,13 @@ import android.graphics.Point;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,12 +37,14 @@ public class MainMenuActivity extends Activity {
     private static final String EXTRA_MESSAGE = "key";
     private static final String SPACE = " ";
     private PersistenceHelper dbHelper = null;
+    private Button buttonClicked = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
         this.dbHelper = new PersistenceHelper(this);
+
     }
 
     @Override
@@ -51,18 +54,25 @@ public class MainMenuActivity extends Activity {
         return true;
     }
 
-    public void launchCustomDisplay(View view)
-    {
+    public void launchCustomDisplay(View view) {
         Intent intent = new Intent(this, com.happypuppy.toastmasterstimer.CustomSpeechActivity.class);
         startActivity(intent);
     }
 
-    public void launchTimerDisplay(View view)
-    {
+    public void launchTimerDisplay(View view) {
         Intent intent = new Intent(this, TimerDisplayActivity.class);
         String speechType = null;
+        buttonClicked = (Button) findViewById(view.getId());
+        buttonClicked.setOnLongClickListener(new View.OnLongClickListener() { //should work?
+            @Override
+            public boolean onLongClick(View v) {
+                showToast("Long from " + v);
+                return true;
+            }
+        });
 
         switch (view.getId()) {
+
             case R.id.tableTopicsBtn:
                 speechType = getResources().getString(R.string.tableTopics);
                 break;
@@ -78,22 +88,16 @@ public class MainMenuActivity extends Activity {
             case R.id.speechEvalBtn:
                 speechType = getResources().getString(R.string.speechEval);
                 break;
-            case R.id.eightToTenBtn:
-                speechType = getResources().getString(R.string.eightToTen);
+            case R.id.tableTopicsZeroToOneBtn:
+                speechType = getResources().getString(R.string.tableTopicsZeroToOne);
                 break;
             default:
                 break;
         }
 
-        if (speechType != null)
-        {
+        if (speechType != null) {
             intent.putExtra(EXTRA_MESSAGE, speechType);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
-            }
-            else {
-                startActivity(intent);
-            }
+            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
         }
     }
 
@@ -120,7 +124,7 @@ public class MainMenuActivity extends Activity {
     }
 
     private void rateApp() {
-        PackageManager pm = getPackageManager() ;
+        PackageManager pm = getPackageManager();
         String installerPackagename = pm.getInstallerPackageName(getPackageName());
         boolean fromGooglePlay = true;
         if (installerPackagename != null) {
@@ -129,8 +133,7 @@ public class MainMenuActivity extends Activity {
             } else if (installerPackagename.contains("amazon")) {
                 fromGooglePlay = false;
             }
-        }
-        else {
+        } else {
             Toast.makeText(this, "No App Store found", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -138,24 +141,35 @@ public class MainMenuActivity extends Activity {
             startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse((fromGooglePlay ? "market://details?id=" : "amzn://apps/android?p=") + getPackageName())));
         } catch (ActivityNotFoundException e1) {
             try {
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse((fromGooglePlay ? "http://play.google.com/store/apps/details?id=" : "http://www.amazon.com/gp/mas/dl/android?p=") +getPackageName())));
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse((fromGooglePlay ? "http://play.google.com/store/apps/details?id=" : "http://www.amazon.com/gp/mas/dl/android?p=") + getPackageName())));
             } catch (ActivityNotFoundException e2) {
                 Toast.makeText(this, "You don't have any app that can open this link", Toast.LENGTH_SHORT).show();
             }
         }
     }
 
-    private void sendFeedbackEmail(){
+    private void sendFeedbackEmail() {
+        PackageInfo packageInfo = null;
+        String versionName = null;
+        try {
+            packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+            versionName = packageInfo.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+        }
 
         Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
         emailIntent.setData(Uri.parse("mailto:" + this.getString(R.string.contact_developer_uri)));
         emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Simple Speech Timer Feedback");
         StringBuilder sb = new StringBuilder();
-        sb.append("Device: " + Build.MANUFACTURER + " " + Build.MODEL + " Android " + Build.VERSION.RELEASE + " (API " + Build.VERSION.SDK_INT + "), ");
+        sb.append("Device: " + Build.MANUFACTURER + " " + Build.MODEL + ", Android " + Build.VERSION.RELEASE + " (API " + Build.VERSION.SDK_INT + "), ");
         Point size = new Point();
         getWindowManager().getDefaultDisplay().getSize(size);
         sb.append("resolution: " + size.x + "x" + size.y + "\n");
-        sb.append("- - - - -\n");
+        if (versionName != null) {
+            sb.append("Version: " + versionName);
+        }
+        sb.append("\n- - - - -\n\n");
+
         emailIntent.putExtra(Intent.EXTRA_TEXT, sb.toString());
 
         try {
@@ -200,7 +214,7 @@ public class MainMenuActivity extends Activity {
         ///TODO CursorAdapter
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         if (!db.isOpen()) {
-            Log.e("DB","db closed");
+            Log.e("DB", "db closed");
         }
         final Cursor c = db.query(dbHelper.getDatabaseName(),
                 PersistenceHelper.COLUMNS,
@@ -274,7 +288,7 @@ public class MainMenuActivity extends Activity {
         alert.show();
         alert.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(Color.RED);
         alert.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(Color.GREEN);
-     }
+    }
 
     private void showToast(String msg) {
         Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
@@ -297,10 +311,9 @@ public class MainMenuActivity extends Activity {
             //get reference to the row
             View view = super.getView(position, convertView, parent);
             //check for odd or even to set alternate colors to the row background
-            if(position % 2 == 0){
+            if (position % 2 == 0) {
                 view.setBackgroundColor(Color.rgb(238, 233, 233));
-            }
-            else {
+            } else {
                 view.setBackgroundColor(Color.rgb(255, 255, 255));
             }
 
@@ -312,9 +325,9 @@ public class MainMenuActivity extends Activity {
         @Override
         public void bindView(View view, Context context, Cursor cursor) {
             // Find fields to populate in inflated template
-            TextView tvName = (TextView) view.findViewById(R.id.tvName);
-            TextView tvTime = (TextView) view.findViewById(R.id.tvTime);
-            TextView tvType = (TextView) view.findViewById(R.id.tvType);
+            TextView tvName = view.findViewById(R.id.tvName);
+            TextView tvTime = view.findViewById(R.id.tvTime);
+            TextView tvType = view.findViewById(R.id.tvType);
 //            TextView tvTimestamp = (TextView) view.findViewById(R.id.tvTimestamp);
             // Extract properties from cursor
             String name = cursor.getString(cursor.getColumnIndexOrThrow("NAME"));

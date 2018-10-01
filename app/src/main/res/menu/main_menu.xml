@@ -1,30 +1,29 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="schemas.android.com/tools"
-        tools:context="com.happypuppy.toastmasterstimer.MainMenuActivity"
-        xmlns:yourapp="http://schemas.android.com/apk/res-auto">
+        xmlns:tools="http://schemas.android.com/tools"
+        tools:context="com.happypuppy.toastmasterstimer.MainMenuActivity">
 
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="1"
-        yourapp:showAsAction="never"
+        android:showAsAction="never"
         android:title="@string/action_settings"/>
 
     <item
         android:id="@+id/action_read_db"
         android:orderInCategory="3"
-        yourapp:showAsAction="never"
+        android:showAsAction="never"
         android:title="@string/action_read_db"/>
 
     <item
         android:id="@+id/action_rate_app"
         android:orderInCategory="4"
-        yourapp:showAsAction="never"
+        android:showAsAction="never"
         android:title="@string/action_rate_app"/>
 
     <item
         android:id="@+id/action_feedback"
         android:title="@string/action_feedback"
-        yourapp:showAsAction="never"
+        android:showAsAction="never"
         android:orderInCategory="5"
         />
 
