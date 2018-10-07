@@ -1,6 +1,5 @@
 package com.happypuppy.toastmasterstimer;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -27,7 +26,6 @@ import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
-import android.text.format.Time;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -45,9 +43,10 @@ import android.widget.Toast;
 import com.happypuppy.toastmasterstimer.persistence.Dto;
 import com.happypuppy.toastmasterstimer.persistence.PersistenceHelper;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -162,9 +161,8 @@ public class TimerDisplayActivity extends Activity {
             }
         });
         ringtone = RingtoneManager.getRingtone(getApplicationContext(), RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            this.useMaterialDesign = true;
-        }
+        this.useMaterialDesign = true;
+
         saveButton = findViewById(R.id.btnSave);
         enableSaveButton(false);
         saveButton.setOnClickListener(new View.OnClickListener() {
@@ -252,10 +250,9 @@ public class TimerDisplayActivity extends Activity {
                 Dto.name = input.getText().toString();
                 Dto.speechTime = mChronometer.getText().toString();
                 Dto.type = getActionBar().getTitle().toString().substring(0, getActionBar().getTitle().toString().indexOf('('));
-                //replace with localDateTime
-                Time t = new Time(Time.getCurrentTimezone());
-                t.setToNow();
-                Dto.timestamp = t.format("%m/%d/%Y %H:%M");
+                DateFormat dateFormatISO8601 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                Dto.timestamp = dateFormatISO8601.format(new Date());
+
                 writeToDb();
             }
         });
@@ -422,7 +419,6 @@ public class TimerDisplayActivity extends Activity {
         boolean isHalf = false;
 
         int temp = (Integer.parseInt(greenTime.split(":")[0]) + Integer.parseInt(redTime.split(":")[0]));
-        System.out.println("temp: " + temp);///
         if (temp % 2 != 0) {
             isHalf = true;
         }

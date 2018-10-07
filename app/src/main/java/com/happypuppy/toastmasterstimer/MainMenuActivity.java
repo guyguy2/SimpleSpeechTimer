@@ -149,7 +149,7 @@ public class MainMenuActivity extends Activity {
     }
 
     private void sendFeedbackEmail() {
-        PackageInfo packageInfo = null;
+        PackageInfo packageInfo;
         String versionName = null;
         try {
             packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
@@ -180,7 +180,7 @@ public class MainMenuActivity extends Activity {
 
     }
 
-    private String getTodayDate() {
+    private String getTodaysDate() {
         Calendar c = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy", java.util.Locale.getDefault());
         return sdf.format(c.getTime());
@@ -211,7 +211,7 @@ public class MainMenuActivity extends Activity {
 
     private void readFromDb() {
         // read from DB and show on screen
-        ///TODO CursorAdapter
+        ///TODO Use Room lib
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         if (!db.isOpen()) {
             Log.e("DB", "db closed");
@@ -278,7 +278,7 @@ public class MainMenuActivity extends Activity {
                 sb.append("\n\n");
                 sb.append("Created using Simple Speech Timer for Android\n");
                 String shareBody = sb.toString();
-                sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getString(R.string.email_subject_tm_timer_report) + " - " + getTodayDate());
+                sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getString(R.string.email_subject_tm_timer_report) + " - " + getTodaysDate());
                 sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
                 startActivity(Intent.createChooser(sharingIntent, getString(R.string.share_via)));
             }
