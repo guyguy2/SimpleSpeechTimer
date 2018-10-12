@@ -24,3 +24,11 @@
     public static int d(...);
     public static int e(...);
 }
+
+-dontwarn afu.org.checkerframework.**
+-dontwarn org.checkerframework.**
+-dontwarn javax.annotation.**
+-dontwarn javax.inject.**
+-dontwarn sun.misc.Unsafe
+-dontwarn com.google.errorprone.**
+-dontwarn com.google.common.util.concurrent.**

@@ -71,6 +71,7 @@ public class TimerDisplayActivity extends Activity {
     private PersistenceHelper dbHelper = null;
     private Map<Integer, Integer> statusBarColorMap = new HashMap<>();
     private final Animation stoppedAnimation = new AlphaAnimation(1.0f, 0.2f);
+    private int currentTheme;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,8 +79,10 @@ public class TimerDisplayActivity extends Activity {
 
         if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean("pref_dark_mode", true)) {
             setTheme(R.style.AppTheme);
+            currentTheme = R.style.AppTheme;
         } else {
             setTheme(R.style.AppThemeLight);
+            currentTheme = R.style.AppThemeLight;
         }
 
         setContentView(R.layout.activity_timer_display);
@@ -141,7 +144,7 @@ public class TimerDisplayActivity extends Activity {
             public void onClick(View view) {
                 stopTimer();
                 mChronometer.clearAnimation();
-                changeBackgroundColor(REMOVE_BACKGROUND_COLOR); //TODO refactor to take color from XML
+                setTheme(currentTheme);
                 mChronometer.setBase(SystemClock.elapsedRealtime());
                 timeWhenStopped = 0;
                 enableSaveButton(false);
