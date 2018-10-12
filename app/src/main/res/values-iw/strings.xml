@@ -31,6 +31,8 @@
     <string name="settings_sound_summary">השמע צליל כאשר התצוגה משנה את הצבע</string>
     <string name="settings_color">צבע</string>
     <string name="settings_color_summary">השתמש ברקע כתום במקום צהוב</string>
+    <string name="settings_theme">ערכת נושא</string>
+    <string name="settings_theme_summary">הפעל ערכת נושא כהה</string>
     <string name="contact_developer_uri">happypuppydev@gmail.com</string>
     <string name="version">1.5.0</string>
     <string name="send_email_using">שלח מייל באמצעות..</string>
@@ -51,6 +53,7 @@
     <string name="email_header">"שם | סוג | תזמון"</string>
     <string name="email_subject_tm_timer_report">"דו"ח זמנים"</string>
     <string name="share_via">"שתף באמצעות</string>
+
 
 
 </resources>

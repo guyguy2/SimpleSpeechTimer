@@ -1,45 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-<SwitchPreference
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:defaultValue="true"
-    android:key="pref_vibrate"
-    android:summary="@string/settings_vibrate_summary"
-    android:title="@string/settings_vibrate" />
+    <SwitchPreference
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:defaultValue="true"
+        android:key="pref_vibrate"
+        android:summary="@string/settings_vibrate_summary"
+        android:title="@string/settings_vibrate" />
 
-<SwitchPreference
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:defaultValue="true"
-    android:key="pref_sound"
-    android:summary="@string/settings_sound_summary"
-    android:title="@string/settings_sound" />
+    <SwitchPreference
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:defaultValue="true"
+        android:key="pref_sound"
+        android:summary="@string/settings_sound_summary"
+        android:title="@string/settings_sound" />
 
-<SwitchPreference
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:defaultValue="false"
-    android:key="pref_color"
-    android:summary="@string/settings_color_summary"
-    android:title="@string/settings_color" />
+    <SwitchPreference
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:defaultValue="false"
+        android:key="pref_color"
+        android:summary="@string/settings_color_summary"
+        android:title="@string/settings_color" />
 
-    <PreferenceCategory android:title="" />
+    <SwitchPreference
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:defaultValue="false"
+        android:key="pref_dark_mode"
+        android:summary="@string/settings_theme_summary"
+        android:title="@string/settings_theme" />
+
+    <PreferenceCategory />
 
     <!--<PreferenceCategory android:title="About" >-->
-        <!--<EditTextPreference-->
-            <!--android:title="Version"-->
-            <!--android:summary="1.6.0"-->
-            <!--android:key="about.version"/>-->
+    <!--<EditTextPreference-->
+    <!--android:title="Version"-->
+    <!--android:summary="1.6.0"-->
+    <!--android:key="about.version"/>-->
     <!--</PreferenceCategory>-->
 
     <Preference
         android:selectable="false"
         android:enabled="true"
-        android:key="example_key"
+        android:key="about_key"
         android:title="About"
-        android:summary="Version 1.6.1" />
+        android:summary="Version 1.6.2" />
 
 </PreferenceScreen>
 

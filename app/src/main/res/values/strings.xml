@@ -29,8 +29,10 @@
     <string name="settings_vibrate_summary">Vibrate when display changes color</string>
     <string name="settings_sound">Sound</string>
     <string name="settings_sound_summary">Play sound when display changes color</string>
-    <string name="settings_color">Color</string>
+    <string name="settings_color">Background Alert Color</string>
     <string name="settings_color_summary">Use orange background instead of yellow</string>
+    <string name="settings_theme">Dark Mode</string>
+    <string name="settings_theme_summary">Enable dark mode</string>
     <string name="contact_developer_uri">happypuppydev@gmail.com</string>
     <string name="version">1.5.0</string>
     <string name="send_email_using">Send email using…</string>

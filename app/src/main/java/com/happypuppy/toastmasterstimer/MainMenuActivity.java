@@ -7,7 +7,6 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -16,6 +15,7 @@ import android.graphics.Point;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -42,6 +42,11 @@ public class MainMenuActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean("pref_dark_mode", true)) {
+            setTheme(R.style.AppTheme);
+        } else {
+            setTheme(R.style.AppThemeLight);
+        }
         setContentView(R.layout.activity_main_menu);
         this.dbHelper = new PersistenceHelper(this);
 
@@ -62,7 +67,7 @@ public class MainMenuActivity extends Activity {
     public void launchTimerDisplay(View view) {
         Intent intent = new Intent(this, TimerDisplayActivity.class);
         String speechType = null;
-        buttonClicked = (Button) findViewById(view.getId());
+        buttonClicked = findViewById(view.getId());
         buttonClicked.setOnLongClickListener(new View.OnLongClickListener() { //should work?
             @Override
             public boolean onLongClick(View v) {
@@ -106,7 +111,7 @@ public class MainMenuActivity extends Activity {
 
         switch (item.getItemId()) {
             case R.id.action_settings:
-                Intent intent = new Intent(this, PreferencesActivity.class);
+                Intent intent = new Intent(this, MyFragmentActivity.class);
                 startActivity(intent);
                 return true;
             case R.id.action_feedback:
@@ -125,12 +130,12 @@ public class MainMenuActivity extends Activity {
 
     private void rateApp() {
         PackageManager pm = getPackageManager();
-        String installerPackagename = pm.getInstallerPackageName(getPackageName());
-        boolean fromGooglePlay = true;
-        if (installerPackagename != null) {
-            if (installerPackagename.contains("android.vending")) {
+        String installerPackageName = pm.getInstallerPackageName(getPackageName());
+        boolean fromGooglePlay = false;
+        if (installerPackageName != null) {
+            if (installerPackageName.contains("android.vending")) {
                 fromGooglePlay = true;
-            } else if (installerPackagename.contains("amazon")) {
+            } else if (installerPackageName.contains("amazon")) {
                 fromGooglePlay = false;
             }
         } else {
@@ -149,13 +154,7 @@ public class MainMenuActivity extends Activity {
     }
 
     private void sendFeedbackEmail() {
-        PackageInfo packageInfo;
-        String versionName = null;
-        try {
-            packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-            versionName = packageInfo.versionName;
-        } catch (PackageManager.NameNotFoundException e) {
-        }
+        String versionName = BuildConfig.VERSION_NAME;
 
         Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
         emailIntent.setData(Uri.parse("mailto:" + this.getString(R.string.contact_developer_uri)));
@@ -165,9 +164,7 @@ public class MainMenuActivity extends Activity {
         Point size = new Point();
         getWindowManager().getDefaultDisplay().getSize(size);
         sb.append("resolution: " + size.x + "x" + size.y + "\n");
-        if (versionName != null) {
-            sb.append("Version: " + versionName);
-        }
+        sb.append("Version: " + versionName);
         sb.append("\n- - - - -\n\n");
 
         emailIntent.putExtra(Intent.EXTRA_TEXT, sb.toString());
@@ -295,7 +292,7 @@ public class MainMenuActivity extends Activity {
     }
 
     private static class MyCursorAdapter extends CursorAdapter {
-        public MyCursorAdapter(Context context, Cursor cursor) {
+        MyCursorAdapter(Context context, Cursor cursor) {
             super(context, cursor, 0);
         }
 

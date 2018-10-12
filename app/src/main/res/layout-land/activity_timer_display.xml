@@ -14,6 +14,7 @@
         android:textSize="50sp" />
 
     <LinearLayout
+        style="?android:attr/buttonBarStyle"
         android:id="@+id/buttonLayout"
         android:orientation="horizontal"
         android:paddingLeft="4.0dp"
@@ -21,19 +22,21 @@
         android:paddingBottom="4.0dp"
         android:layout_width="fill_parent"
         android:layout_height="80dp"
-        android:visibility="invisible"
+        android:visibility="visible"
         android:layout_alignParentBottom="true">
 
         <Button
+            style="?android:attr/buttonBarStyle"
             android:id="@+id/btnReset"
             android:layout_width="0.0dp"
             android:layout_height="fill_parent"
             android:drawableStart="@drawable/ic_restore_white_24dp"
             android:text="@string/pause_btn"
-            android:visibility="invisible"
+            android:visibility="visible"
             android:layout_weight="1.5" />
 
         <Button
+            style="?android:attr/buttonBarStyle"
             android:id="@+id/btnStart"
             android:layout_width="0.0dp"
             android:layout_height="fill_parent"
@@ -43,12 +46,13 @@
             android:visibility="invisible" />
 
         <Button
+            style="?android:attr/buttonBarStyle"
             android:id="@+id/btnSave"
             android:layout_width="0.0dp"
             android:layout_height="fill_parent"
             android:text="@string/save_btn"
             android:drawableStart="@drawable/ic_save_white_24dp"
-            android:visibility="invisible"
+            android:visibility="visible"
             android:layout_weight="1.0" />
     </LinearLayout>
 

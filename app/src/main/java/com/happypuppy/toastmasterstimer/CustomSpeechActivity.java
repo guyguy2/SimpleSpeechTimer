@@ -4,7 +4,9 @@ package com.happypuppy.toastmasterstimer;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
+import androidx.core.app.NavUtils;
+
+import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,16 +22,21 @@ public class CustomSpeechActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean("pref_dark_mode", true)) {
+            setTheme(R.style.AppTheme);
+        } else {
+            setTheme(R.style.AppThemeLight);
+        }
         setContentView(R.layout.activity_custom_speech);
         // Show the Up button in the action bar.
         setupActionBar();
 
         String BIGGER_THAN = ">";
         setTitle(getResources().getString(R.string.customSpeech).replace(BIGGER_THAN, ""));
-        Button goButton = (Button) findViewById(R.id.btnGo);
+        Button goButton = findViewById(R.id.btnGo);
 
-        npFrom = (NumberPicker) findViewById(R.id.numberPickerFrom);
-        npTo = (NumberPicker) findViewById(R.id.numberPickerTo);
+        npFrom = findViewById(R.id.numberPickerFrom);
+        npTo = findViewById(R.id.numberPickerTo);
 
         npFrom.setMinValue(1);
         npFrom.setMaxValue(99);
@@ -93,7 +100,7 @@ public class CustomSpeechActivity extends Activity {
                 return true;
             case R.id.action_settings:
                 //launch settings intent / activity
-                Intent intent = new Intent(this, PreferencesActivity.class);
+                Intent intent = new Intent(this, MyFragmentActivity.class);
                 startActivity(intent);
                 return true;
         }

@@ -15,14 +15,13 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.os.SystemClock;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
-import android.support.v4.app.NavUtils;
-import android.support.v4.content.ContextCompat;
+import androidx.core.app.NavUtils;
+import androidx.core.content.ContextCompat;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -76,8 +75,14 @@ public class TimerDisplayActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_timer_display);
 
+        if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean("pref_dark_mode", true)) {
+            setTheme(R.style.AppTheme);
+        } else {
+            setTheme(R.style.AppThemeLight);
+        }
+
+        setContentView(R.layout.activity_timer_display);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         // Show the Up button in the action bar.
@@ -95,24 +100,6 @@ public class TimerDisplayActivity extends Activity {
         useVibrate = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("pref_vibrate", false);
         useSound = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("pref_sound", false);
         useOrangeBackgroundColor = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("pref_color", false);
-
-
-
-        mChronometer.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String time = s.toString();
-
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
 
         mChronometer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
             @Override
@@ -250,7 +237,7 @@ public class TimerDisplayActivity extends Activity {
                 Dto.name = input.getText().toString();
                 Dto.speechTime = mChronometer.getText().toString();
                 Dto.type = getActionBar().getTitle().toString().substring(0, getActionBar().getTitle().toString().indexOf('('));
-                DateFormat dateFormatISO8601 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                DateFormat dateFormatISO8601 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
                 Dto.timestamp = dateFormatISO8601.format(new Date());
 
                 writeToDb();
@@ -333,12 +320,9 @@ public class TimerDisplayActivity extends Activity {
         if (currentLayout == null || currentLayout.getBackground() == null) {
             return false;
         }
-
         int backgroundColor = ((ColorDrawable)currentLayout.getBackground()).getColor();
-        if (backgroundColor == color) {
-            return true;
-        }
-        return false;
+
+        return backgroundColor == color;
     }
 
     private void toggleStartButtonIcon() {
@@ -404,7 +388,7 @@ public class TimerDisplayActivity extends Activity {
         }
         else if (type.equals(res.getString(R.string.tableTopicsZeroToOne)))
         {
-            setTitle(res.getString(R.string.speechEval).replace(BIGGER_THAN, ""));
+            setTitle(res.getString(R.string.tableTopicsZeroToOne).replace(BIGGER_THAN, ""));
             this.greenTime = "00:30";
             this.redTime = "01:00";
             this.yellowTime = "00:45";
@@ -425,9 +409,9 @@ public class TimerDisplayActivity extends Activity {
         yellow = temp / 2;
 
         if (isHalf) {
-            return String.format("%02d:30", yellow);
+            return String.format(Locale.getDefault(), "%02d:30", yellow);
         } else {
-            return String.format("%02d:00", yellow);
+            return String.format(Locale.getDefault(),"%02d:00", yellow);
         }
     }
 
@@ -460,7 +444,7 @@ public class TimerDisplayActivity extends Activity {
                 return true;
             case R.id.action_settings:
                 //launch settings intent / activity
-                Intent intent = new Intent(this, PreferencesActivity.class);
+                Intent intent = new Intent(this, MyFragmentActivity.class);
                 startActivity(intent);
                 return true;
             case R.id.action_show_hide:
