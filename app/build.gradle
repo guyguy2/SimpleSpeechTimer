@@ -3,16 +3,17 @@ apply plugin: 'com.android.application'
 android {
     signingConfigs {
     }
-    compileSdkVersion 28
+    compileSdkVersion 33
     compileOptions {
         encoding "UTF-8"
+        targetCompatibility JavaVersion.VERSION_1_8
     }
     defaultConfig {
         applicationId "com.happypuppy.toastmasterstimer"
-        minSdkVersion 22
-        targetSdkVersion 28
-        versionCode 18
-        versionName "1.6.2"
+        minSdkVersion 29
+        targetSdkVersion 33
+        versionCode 19
+        versionName "1.7.0"
     }
     buildTypes {
         release {
@@ -22,18 +23,29 @@ android {
     }
     productFlavors {
     }
+    namespace 'com.happypuppy.toastmasterstimer'
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'androidx.recyclerview:recyclerview:1.0.0'
-    implementation 'androidx.preference:preference:1.0.0'
+    implementation 'androidx.recyclerview:recyclerview:1.3.0'
+    implementation 'androidx.preference:preference:1.2.0' //remove
+    implementation "androidx.datastore:datastore-preferences:1.0.0"
+
+
+    implementation 'com.google.android.material:material:1.8.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    def lifecycle_version = "2.5.0"
+    implementation "androidx.lifecycle:lifecycle-viewmodel:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
 
     // Room components
-    def room_version = "2.0.0"
+    def room_version = '2.5.1'
     implementation "androidx.room:room-runtime:$room_version"
     annotationProcessor "androidx.room:room-compiler:$room_version"
     // optional - Guava support for Room, including Optional and ListenableFuture
     implementation "androidx.room:room-guava:$room_version"
+
 }
 

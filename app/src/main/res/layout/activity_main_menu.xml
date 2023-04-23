@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_centerHorizontal="true"
     android:gravity="center"
     android:orientation="vertical"
@@ -11,16 +12,6 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainMenuActivity"
     android:id="@+id/buttonLayout">
-
-    <Button
-        android:id="@+id/tableTopicsZeroToOneBtn"
-        android:layout_weight="1"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:onClick="launchTimerDisplay"
-        android:longClickable="true"
-        android:text="@string/tableTopicsZeroToOne" />
 
     <Button
         android:id="@+id/tableTopicsBtn"

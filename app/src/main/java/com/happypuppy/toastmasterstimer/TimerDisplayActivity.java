@@ -3,7 +3,6 @@ package com.happypuppy.toastmasterstimer;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -18,13 +17,10 @@ import android.media.RingtoneManager;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.os.SystemClock;
+import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
-import androidx.core.app.NavUtils;
-import androidx.core.content.ContextCompat;
-import android.text.Editable;
 import android.text.InputType;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -38,6 +34,9 @@ import android.widget.Chronometer;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
+
+import androidx.core.app.NavUtils;
+import androidx.core.content.ContextCompat;
 
 import com.happypuppy.toastmasterstimer.persistence.Dto;
 import com.happypuppy.toastmasterstimer.persistence.PersistenceHelper;
@@ -69,9 +68,15 @@ public class TimerDisplayActivity extends Activity {
     private boolean useMaterialDesign = false;
     private boolean isShown = true;
     private PersistenceHelper dbHelper = null;
-    private Map<Integer, Integer> statusBarColorMap = new HashMap<>();
+    private final Map<Integer, Integer> statusBarColorMap = new HashMap<>();
     private final Animation stoppedAnimation = new AlphaAnimation(1.0f, 0.2f);
     private int currentTheme;
+
+    private final VibrationEffect vibrationEffectOneShot = VibrationEffect.createOneShot(300, VibrationEffect.DEFAULT_AMPLITUDE);
+    long[] timings = {0, 100, 100, 300}; // 2 pulses, 100ms on, 300ms off, 100ms on
+    int[] amplitudes = {0, 255, 0, 255}; // 2 pulses, first pulse off, second pulse full amplitude
+    private final VibrationEffect vibrationEffectMany = VibrationEffect.createWaveform(timings, amplitudes, -1);
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,63 +109,51 @@ public class TimerDisplayActivity extends Activity {
         useSound = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("pref_sound", false);
         useOrangeBackgroundColor = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("pref_color", false);
 
-        mChronometer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
-            @Override
-            public void onChronometerTick(Chronometer chronometer) {
-                String displayedTime = String.valueOf(chronometer.getText());
+        mChronometer.setOnChronometerTickListener(chronometer -> {
+            String displayedTime = String.valueOf(chronometer.getText());
 
-                if (displayedTime.equals(greenTime)) {
-                    changeBackgroundColor(Color.GREEN);
-                } else if (displayedTime.equals(yellowTime)) {
-                    if (useOrangeBackgroundColor) {
-                        changeBackgroundColor(Color.rgb(255, 165, 0));
-                    }
-                    else {
-                        changeBackgroundColor(Color.YELLOW);
-                    }
+            if (displayedTime.equals(greenTime)) {
+                changeBackgroundColor(Color.GREEN);
+            } else if (displayedTime.equals(yellowTime)) {
+                if (useOrangeBackgroundColor) {
+                    changeBackgroundColor(Color.rgb(255, 165, 0));
                 }
-                else if (displayedTime.equals(redTime)) {
-                    changeBackgroundColor(Color.RED);
+                else {
+                    changeBackgroundColor(Color.YELLOW);
                 }
+            }
+            else if (displayedTime.equals(redTime)) {
+                changeBackgroundColor(Color.RED);
             }
         });
 
-        startButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (isTimerRunning) {
-                    //pause
-                    stopTimer();
-                    mChronometer.startAnimation(stoppedAnimation);
-                } else {
-                    startTimer();
-                    mChronometer.clearAnimation();
-                }
+        startButton.setOnClickListener(v -> {
+            if (isTimerRunning) {
+                //pause
+                stopTimer();
+                mChronometer.startAnimation(stoppedAnimation);
+            } else {
+                startTimer();
+                mChronometer.clearAnimation();
             }
         });
 
         resetButton = findViewById(R.id.btnReset);
-        resetButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                stopTimer();
-                mChronometer.clearAnimation();
-                setTheme(currentTheme);
-                mChronometer.setBase(SystemClock.elapsedRealtime());
-                timeWhenStopped = 0;
-                enableSaveButton(false);
-            }
+        resetButton.setOnClickListener(view -> {
+            stopTimer();
+            mChronometer.clearAnimation();
+            setTheme(currentTheme);
+            mChronometer.setBase(SystemClock.elapsedRealtime());
+            timeWhenStopped = 0;
+            enableSaveButton(false);
+            changeBackgroundColor(REMOVE_BACKGROUND_COLOR);
         });
         ringtone = RingtoneManager.getRingtone(getApplicationContext(), RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
         this.useMaterialDesign = true;
 
         saveButton = findViewById(R.id.btnSave);
         enableSaveButton(false);
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                persistTime();
-            }
-        });
+        saveButton.setOnClickListener(v -> persistTime());
         this.dbHelper = new PersistenceHelper(this);
         //darker shade for status bar color
         this.statusBarColorMap.put(Color.GREEN, Color.rgb(0, 200, 0));
@@ -202,10 +195,12 @@ public class TimerDisplayActivity extends Activity {
         Drawable saveIcon = ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_save_white_24dp);
         if (isEnabled) {
             saveButton.setEnabled(true);
+            assert saveIcon != null;
             saveIcon.setAlpha(255);
         }
         else {
             saveButton.setEnabled(false);
+            assert saveIcon != null;
             saveIcon.setAlpha(100);
         }
         saveButton.setCompoundDrawablesWithIntrinsicBounds(saveIcon, null, null, null);
@@ -223,36 +218,30 @@ public class TimerDisplayActivity extends Activity {
         input.requestFocus();
         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY | InputMethodManager.HIDE_NOT_ALWAYS);
         builder.setView(input);
-        builder.setPositiveButton(getString(R.string.confirm), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if (input.getText().toString().isEmpty()) {
-                    Toast.makeText(getApplicationContext(), getString(R.string.nothing_to_save), Toast.LENGTH_SHORT).show();
-                    View view = findViewById(android.R.id.content);
-                    if (view != null) {
-                        imm.toggleSoftInput(0, 0);
-                    }
-                    input.clearFocus();
-                    return;
+        builder.setPositiveButton(getString(R.string.confirm), (dialog, which) -> {
+            if (input.getText().toString().isEmpty()) {
+                Toast.makeText(getApplicationContext(), getString(R.string.nothing_to_save), Toast.LENGTH_SHORT).show();
+                View view = findViewById(android.R.id.content);
+                if (view != null) {
+                    imm.toggleSoftInput(0, 0);
                 }
                 input.clearFocus();
-                imm.toggleSoftInput(0, 0);
-                Dto.name = input.getText().toString();
-                Dto.speechTime = mChronometer.getText().toString();
-                Dto.type = getActionBar().getTitle().toString().substring(0, getActionBar().getTitle().toString().indexOf('('));
-                DateFormat dateFormatISO8601 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-                Dto.timestamp = dateFormatISO8601.format(new Date());
+                return;
+            }
+            input.clearFocus();
+            imm.toggleSoftInput(0, 0);
+            Dto.name = input.getText().toString();
+            Dto.speechTime = mChronometer.getText().toString();
+            Dto.type = getActionBar().getTitle().toString().substring(0, getActionBar().getTitle().toString().indexOf('('));
+            DateFormat dateFormatISO8601 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+            Dto.timestamp = dateFormatISO8601.format(new Date());
 
-                writeToDb();
-            }
+            writeToDb();
         });
-        builder.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                input.clearFocus();
-                imm.toggleSoftInput(0, 0);
-                dialog.cancel();
-            }
+        builder.setNegativeButton(getString(R.string.cancel), (dialog, which) -> {
+            input.clearFocus();
+            imm.toggleSoftInput(0, 0);
+            dialog.cancel();
         });
 
         AlertDialog dialog = builder.create();
@@ -261,7 +250,6 @@ public class TimerDisplayActivity extends Activity {
 
     private void writeToDb() {
         Log.d("TimerDisplayActivity", "writeToDb " + this.dbHelper.getDatabaseName());
-//        this.deleteDatabase(dbHelper.getDatabaseName()); ///
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         //get max ID
@@ -288,6 +276,7 @@ public class TimerDisplayActivity extends Activity {
             Toast.makeText(getApplicationContext(),  getString(R.string.error_db), Toast.LENGTH_SHORT).show();
         } finally {
             db.close();
+            c.close();
         }
     }
 
@@ -357,7 +346,7 @@ public class TimerDisplayActivity extends Activity {
         Resources res = getResources();
 
         String BIGGER_THAN = ">";
-        if (type.equals(res.getString(R.string.tableTopics)))
+        if (type.equals(res.getString(R.string.tableTopics))) ///
         {
             setTitle(res.getString(R.string.tableTopics).replace(BIGGER_THAN, ""));
             this.greenTime = "01:00";
@@ -543,13 +532,11 @@ public class TimerDisplayActivity extends Activity {
             }
         }
         if (this.useVibrate) {
-            //can add patterns in the future
             if (color == Color.RED) {
-                long pattern[]={0,300,300,300};
-                ((Vibrator)getSystemService(Context.VIBRATOR_SERVICE)).vibrate(pattern, -1);
+                ((Vibrator)getSystemService(Context.VIBRATOR_SERVICE)).vibrate(vibrationEffectMany);
             }
             else {
-                ((Vibrator)getSystemService(Context.VIBRATOR_SERVICE)).vibrate(300);
+                ((Vibrator)getSystemService(Context.VIBRATOR_SERVICE)).vibrate(vibrationEffectOneShot);
             }
         }
     }

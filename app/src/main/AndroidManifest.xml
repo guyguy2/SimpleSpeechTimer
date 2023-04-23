@@ -1,46 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.happypuppy.toastmasterstimer">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/icon"
+        android:icon="@mipmap/icon"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
         <activity
-            android:name="com.happypuppy.toastmasterstimer.MainMenuActivity"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:name=".SplashActivity"
+            android:exported="true">
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+    </activity>
 
         <activity
-            android:name="com.happypuppy.toastmasterstimer.TimerDisplayActivity"
+            android:name=".MainMenuActivity"
+            android:exported="false"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait">
+
+        </activity>
+        <activity
+
+            android:name=".TimerDisplayActivity"
             android:label="@string/title_activity_timer_display"
-            android:parentActivityName="com.happypuppy.toastmasterstimer.MainMenuActivity" >
+            android:parentActivityName=".MainMenuActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.happypuppy.toastmasterstimer.MainMenuActivity" />
         </activity>
         <activity
-            android:name="com.happypuppy.toastmasterstimer.CustomSpeechActivity"
+            android:name=".CustomSpeechActivity"
             android:label="@string/title_activity_custom_speech"
-            android:screenOrientation="portrait"
-            android:parentActivityName="com.happypuppy.toastmasterstimer.MainMenuActivity" >
+            android:parentActivityName=".MainMenuActivity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.happypuppy.toastmasterstimer.MainMenuActivity" />
         </activity>
         <activity
-            android:name="com.happypuppy.toastmasterstimer.MyFragmentActivity"
+            android:name=".MyFragmentActivity"
             android:label="@string/action_settings"
-            android:parentActivityName="com.happypuppy.toastmasterstimer.MainMenuActivity" >
-        </activity>
+            android:parentActivityName=".MainMenuActivity"></activity>
     </application>
 
 </manifest>

@@ -53,5 +53,4 @@
     <string name="email_header">"Name | Speech Type | Time"</string>
     <string name="email_subject_tm_timer_report">"Toastmasters Timer Report"</string>
     <string name="share_via">"Share via"</string>
-
 </resources>

@@ -4,8 +4,6 @@ package com.happypuppy.toastmasterstimer;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.core.app.NavUtils;
-
 import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,6 +11,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.NumberPicker;
 import android.widget.Toast;
+
+import androidx.core.app.NavUtils;
 
 public class CustomSpeechActivity extends Activity {
 
@@ -50,21 +50,18 @@ public class CustomSpeechActivity extends Activity {
         npTo.setFocusableInTouchMode(true);
         npTo.setFocusable(true);
 
-        goButton.setOnClickListener(new View.OnClickListener() {
+        goButton.setOnClickListener(v -> {
+            int from = npFrom.getValue();
+            int to = npTo.getValue();
 
-            @Override
-            public void onClick(View v) {
-                int from = npFrom.getValue();
-                int to = npTo.getValue();
-
-                if (from >= to) {
-                    showToast("Please specify a time range");
-                } else {
-                    // launch timer intent
-                    Intent intent = new Intent(v.getContext(), TimerDisplayActivity.class);
-                    intent.putExtra("key", getResources().getString(R.string.customSpeech) + ":" + from + ":" + to);
-                    startActivity(intent);
-                }
+            if (from >= to) {
+                showToast("Please specify a time range");
+            } else {
+                // launch timer intent
+                Intent intent = new Intent(v.getContext(), TimerDisplayActivity.class);
+                String value = getResources().getString(R.string.customSpeech) + ":" + from + ":" + to;
+                intent.putExtra("key", value);
+                startActivity(intent);
             }
         });
     }

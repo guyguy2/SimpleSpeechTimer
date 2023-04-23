@@ -1,17 +1,15 @@
 package com.happypuppy.toastmasterstimer;
 
 
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-
-import java.util.Calendar;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
+
+import java.util.Calendar;
 
 
 public class MyFragmentActivity extends FragmentActivity {
@@ -30,26 +28,22 @@ public class MyFragmentActivity extends FragmentActivity {
     public static class PrefFragment extends PreferenceFragmentCompat {
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
-            //addPreferencesFromResource(R.xml.user_settings);
             setPreferencesFromResource(R.xml.user_settings, rootKey);
 
             Preference preference = findPreference("about_key");
-            preference.setSummary("version " + BuildConfig.VERSION_NAME + ", 2013 - " + Calendar.getInstance().get(Calendar.YEAR));
+            preference.setSummary("version " + BuildConfig.VERSION_NAME + ", " + Calendar.getInstance().get(Calendar.YEAR));
 
-            findPreference("pref_dark_mode").setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-                @Override
-                public boolean onPreferenceChange(Preference preference, Object newValue) {
-                    if (newValue instanceof Boolean) {
-                        Boolean isDarkMode = Boolean.valueOf(newValue.toString());
-                        if (isDarkMode) {
-                            getActivity().setTheme(R.style.AppTheme);
-                        } else {
-                            getActivity().setTheme(R.style.AppThemeLight);
-                        }
-                        getActivity().recreate();
+            findPreference("pref_dark_mode").setOnPreferenceChangeListener((preference1, newValue) -> {
+                if (newValue instanceof Boolean) {
+                    boolean isDarkMode = Boolean.parseBoolean(newValue.toString());
+                    if (isDarkMode) {
+                        getActivity().setTheme(R.style.AppTheme);
+                    } else {
+                        getActivity().setTheme(R.style.AppThemeLight);
                     }
-                    return true;
+                    getActivity().recreate();
                 }
+                return true;
             });
         }
 

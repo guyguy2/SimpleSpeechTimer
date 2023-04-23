@@ -1,5 +1,6 @@
 package com.happypuppy.toastmasterstimer;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityOptions;
 import android.app.AlertDialog;
@@ -37,7 +38,6 @@ public class MainMenuActivity extends Activity {
     private static final String EXTRA_MESSAGE = "key";
     private static final String SPACE = " ";
     private PersistenceHelper dbHelper = null;
-    private Button buttonClicked = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +49,6 @@ public class MainMenuActivity extends Activity {
         }
         setContentView(R.layout.activity_main_menu);
         this.dbHelper = new PersistenceHelper(this);
-
     }
 
     @Override
@@ -67,13 +66,11 @@ public class MainMenuActivity extends Activity {
     public void launchTimerDisplay(View view) {
         Intent intent = new Intent(this, TimerDisplayActivity.class);
         String speechType = null;
-        buttonClicked = findViewById(view.getId());
-        buttonClicked.setOnLongClickListener(new View.OnLongClickListener() { //should work?
-            @Override
-            public boolean onLongClick(View v) {
-                showToast("Long from " + v);
-                return true;
-            }
+        Button buttonClicked = findViewById(view.getId());
+        //should work?
+        buttonClicked.setOnLongClickListener(v -> {
+            showToast("Long from " + v);
+            return true;
         });
 
         switch (view.getId()) {
@@ -92,9 +89,6 @@ public class MainMenuActivity extends Activity {
                 break;
             case R.id.speechEvalBtn:
                 speechType = getResources().getString(R.string.speechEval);
-                break;
-            case R.id.tableTopicsZeroToOneBtn:
-                speechType = getResources().getString(R.string.tableTopicsZeroToOne);
                 break;
             default:
                 break;
@@ -160,11 +154,11 @@ public class MainMenuActivity extends Activity {
         emailIntent.setData(Uri.parse("mailto:" + this.getString(R.string.contact_developer_uri)));
         emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Simple Speech Timer Feedback");
         StringBuilder sb = new StringBuilder();
-        sb.append("Device: " + Build.MANUFACTURER + " " + Build.MODEL + ", Android " + Build.VERSION.RELEASE + " (API " + Build.VERSION.SDK_INT + "), ");
+        sb.append("Device: ").append(Build.MANUFACTURER).append(" ").append(Build.MODEL).append(", Android ").append(Build.VERSION.RELEASE).append(" (API ").append(Build.VERSION.SDK_INT).append("), ");
         Point size = new Point();
         getWindowManager().getDefaultDisplay().getSize(size);
-        sb.append("resolution: " + size.x + "x" + size.y + "\n");
-        sb.append("Version: " + versionName);
+        sb.append("resolution: ").append(size.x).append("x").append(size.y).append("\n");
+        sb.append("Version: ").append(versionName);
         sb.append("\n- - - - -\n\n");
 
         emailIntent.putExtra(Intent.EXTRA_TEXT, sb.toString());
@@ -187,20 +181,13 @@ public class MainMenuActivity extends Activity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(getString(R.string.confirm));
         builder.setMessage(getString(R.string.delete_all_saved_data));
-        builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                SQLiteDatabase db = dbHelper.getWritableDatabase();
-                db.delete(dbHelper.getDatabaseName(), null, null);
-                showToast(getString(R.string.saved_data_deleted));
-            }
+        builder.setPositiveButton(getString(R.string.yes), (dialog, which) -> {
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
+            db.delete(dbHelper.getDatabaseName(), null, null);
+            showToast(getString(R.string.saved_data_deleted));
         });
 
-        builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
+        builder.setNegativeButton(getString(R.string.no), (dialog, which) -> dialog.dismiss());
 
         AlertDialog alert = builder.create();
         alert.show();
@@ -232,53 +219,36 @@ public class MainMenuActivity extends Activity {
             return;
         }
         MyCursorAdapter cursorAdapter = new MyCursorAdapter(this, c);
-        builder.setAdapter(cursorAdapter, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        builder.setNeutralButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
+        builder.setAdapter(cursorAdapter, (dialog, which) -> dialog.dismiss());
+        builder.setNeutralButton(getString(R.string.cancel), (dialog, which) -> dialog.dismiss());
 
-        builder.setNegativeButton("Delete", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                clearDb();
-            }
-        });
+        builder.setNegativeButton("Delete", (dialog, which) -> clearDb());
 
-        builder.setPositiveButton(getString(R.string.share), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
-                sharingIntent.setType("text/plain");
-                StringBuilder sb = new StringBuilder();
-                sb.append(getString(R.string.email_header) + "\n\n");
-                c.moveToPosition(-1);
-                int i = 0;
-                while (c.moveToNext()) {
-                    sb.append(++i + ". ");
-                    sb.append(SPACE);
-                    sb.append(c.getString(c.getColumnIndex("NAME")));
-                    sb.append(SPACE);
-                    sb.append(c.getString(c.getColumnIndex("TYPE")));
-                    sb.append(SPACE);
-                    sb.append(c.getString(c.getColumnIndex("TIME")));
-                    sb.append(SPACE);
+        builder.setPositiveButton(getString(R.string.share), (dialog, which) -> {
+            Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+            sharingIntent.setType("text/plain");
+            StringBuilder sb = new StringBuilder();
+            sb.append(getString(R.string.email_header)).append("\n\n");
+            c.moveToPosition(-1);
+            int i = 0;
+            while (c.moveToNext()) {
+                sb.append(++i).append(". ");
+                sb.append(SPACE);
+                sb.append(c.getString(c.getColumnIndex("NAME")));
+                sb.append(SPACE);
+                sb.append(c.getString(c.getColumnIndex("TYPE")));
+                sb.append(SPACE);
+                sb.append(c.getString(c.getColumnIndex("TIME")));
+                sb.append(SPACE);
 //                    sb.append(c.getString(c.getColumnIndex("TIMESTAMP")));
-                    sb.append('\n');
-                }
-                sb.append("\n\n");
-                sb.append("Created using Simple Speech Timer for Android\n");
-                String shareBody = sb.toString();
-                sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getString(R.string.email_subject_tm_timer_report) + " - " + getTodaysDate());
-                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
-                startActivity(Intent.createChooser(sharingIntent, getString(R.string.share_via)));
+                sb.append('\n');
             }
+            sb.append("\n\n");
+            sb.append("Created using Simple Speech Timer for Android\n");
+            String shareBody = sb.toString();
+            sharingIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.email_subject_tm_timer_report) + " - " + getTodaysDate());
+            sharingIntent.putExtra(Intent.EXTRA_TEXT, shareBody);
+            startActivity(Intent.createChooser(sharingIntent, getString(R.string.share_via)));
         });
 
         AlertDialog alert = builder.create();
